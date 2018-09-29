@@ -55,7 +55,7 @@ def broadcast(bot: CQHttp, context=None):
         mouths = delta.days//30
         days = delta.days % 30
         text = "距离 %s 还有 %d 天 (%d 月 %s)." % (
-            name, delta.days, mouths, "%d 天" if days != 0 else " ")
+            name, delta.days, mouths, ("%d 天" % days) if days != 0 else " ")
         print_log(text)
         bot.send_group_msg(group_id=GROUP_ID, message=text)
 
