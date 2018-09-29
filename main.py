@@ -25,7 +25,7 @@ def main_loop():
                 break
             print_log("checking... ")
             time.sleep(20)
-
+        print_log("broadcast at time table.")
         broadcast(bot)
 
 
