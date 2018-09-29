@@ -52,8 +52,8 @@ def broadcast(bot: CQHttp, context=None):
         name = item["name"]
         exp_time = datetime.strptime(item["date"], "%Y-%m-%d")
         delta: timedelta = exp_time-today
-        mouths = delta.days()//30
-        days = delta.days() % 30
+        mouths = delta.days//30
+        days = delta.days % 30
         text = "距离 %s 还有 %d 天 (%d 月 %s)." % (
             name, delta.days, mouths, "%d 天" if days != 0 else " ")
         print_log(text)
