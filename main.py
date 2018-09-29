@@ -16,7 +16,7 @@ def command(name, help=""):
     return inner
 
 
-def main_loop():
+def main_loop(func):
     while True:
         while True:
             from datetime import datetime
@@ -26,7 +26,7 @@ def main_loop():
             print_log("checking... ")
             time.sleep(20)
         print_log("broadcast at time table.")
-        broadcast()
+        func()
 
 
 def main():
@@ -34,7 +34,7 @@ def main():
     print_log("By MikuNotFoundException.")
     print_log("QQ:814980678")
     print_log("Starting CQHttp...")
-    thread = threading.Thread(target=main_loop)
+    thread = threading.Thread(target=main_loop,args=(func,))
     print_log("Starting daemon thread..")
     thread.start()
     bot.run(host=POST_ADDRESS, port=POST_PORT)
