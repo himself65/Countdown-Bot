@@ -34,7 +34,7 @@ def main():
     print_log("By MikuNotFoundException.")
     print_log("QQ:814980678")
     print_log("Starting CQHttp...")
-    thread = threading.Thread(target=main_loop, args=(func,))
+    thread = threading.Thread(target=main_loop, args=(broadcast,))
     print_log("Starting daemon thread..")
     thread.start()
     bot.run(host=POST_ADDRESS, port=POST_PORT)
