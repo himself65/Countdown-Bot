@@ -45,13 +45,17 @@ def broadcast(bot: CQHttp, context=None):
     print_log("broadcasting..")
     countdown_list = get_countdown_list()
     from datetime import datetime
+    from datetime import timedelta
     today = datetime.now()
     for item in countdown_list:
         print_log(item)
         name = item["name"]
         exp_time = datetime.strptime(item["date"], "%Y-%m-%d")
-        delta = exp_time-today
-        text = "距离 %s 还有 %d 天." % (name, delta.days)
+        delta: timedelta = exp_time-today
+        mouths = delta.days()//30
+        days = delta.days() % 30
+        text = "距离 %s 还有 %d 天 (%d 月 %s)." % (
+            name, delta.days, mouths, "%d 天" if days != 0 else " ")
         print_log(text)
         bot.send_group_msg(group_id=GROUP_ID, message=text)
 
@@ -59,7 +63,7 @@ def broadcast(bot: CQHttp, context=None):
 @command(name="help", help="查看帮助")
 def help(bot: CQHttp, context=None):
     bot.send(context, "".join(
-        map(lambda x: x[0]+" --- "+x[1][1]+"\n", commands.items())))
+        map(lambda x: x[0]+" --- "+x[1][0]+"\n", commands.items())))
 
 
 @bot.on_message()
