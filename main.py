@@ -27,6 +27,7 @@ def main_loop():
             time.sleep(20)
         print_log("broadcast at time table.")
         broadcast()
+        time.sleep(60)
 
 
 def main():
