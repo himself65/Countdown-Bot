@@ -1,5 +1,5 @@
 # coolq HTTP API的监听地址
-API_URL = "http://127.0.0.1:5700/"
+API_URL = "http://127.0.0.1:5001/"
 # 访问密钥
 ACCESS_TOKEN = "sxoiers"
 # 密码
@@ -7,7 +7,7 @@ SECRET = ""
 # 允许的上报地址
 POST_ADDRESS = "127.0.0.1"
 # 上报端口
-POST_PORT = 7700
+POST_PORT = 5002
 # 群号
 GROUP_ID = 718459861
 #小时和分钟，24时制
