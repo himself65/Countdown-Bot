@@ -5,7 +5,7 @@ ACCESS_TOKEN = "sxoiers"
 # 密码
 SECRET = ""
 # 允许的上报地址
-POST_ADDRESS = "127.0.0.1"
+POST_ADDRESS = "0.0.0.0"
 # 上报端口
 POST_PORT = 5002
 # 群号
