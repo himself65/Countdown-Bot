@@ -11,7 +11,7 @@ POST_PORT = 7700
 # 群号
 GROUP_ID = 718459861
 #小时和分钟，24时制
-BROADCAST_HOUR = 8
-BROADCAST_MINUTE = 0
+BROADCAST_HOUR = 21
+BROADCAST_MINUTE = 50
 # 列表地址
 LIST_URL = "https://gitee.com/ZhehaoMi/countdown/raw/master/countdown.json"
