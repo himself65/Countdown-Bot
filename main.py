@@ -26,7 +26,7 @@ def main_loop():
             print_log("checking... ")
             time.sleep(20)
         print_log("broadcast at time table.")
-        broadcast(bot)
+        broadcast()
 
 
 def main():
@@ -41,7 +41,7 @@ def main():
 
 
 @command(name="broadcast", help="进行广播")
-def broadcast(bot: CQHttp, context=None):
+def broadcast(bot: CQHttp=bot, context=None):
     print_log("broadcasting..")
     countdown_list = get_countdown_list()
     from datetime import datetime
