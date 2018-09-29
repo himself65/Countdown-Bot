@@ -66,11 +66,12 @@ def help(bot: CQHttp, context=None):
 def handle_message(context):
     print_log("handling message:{}".format(context))
     print_log(context)
-    text: str = context["message"]
-    if text.startswith("/"):
-        command = text[1:]
-        if command in commands:
-            commands[command][1].__call__(bot, context)
+    if context["message"][0]["type"] == "text":
+        text: str = context["message"][0]["data"]["text"]
+        if text.startswith("/"):
+            command = text[1:]
+            if command in commands:
+                commands[command][1].__call__(bot, context)
 
 
 if __name__ == "__main__":
