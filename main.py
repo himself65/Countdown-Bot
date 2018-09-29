@@ -16,7 +16,7 @@ def command(name, help=""):
     return inner
 
 
-def main_loop(func):
+def main_loop():
     while True:
         while True:
             from datetime import datetime
@@ -26,7 +26,7 @@ def main_loop(func):
             print_log("checking... ")
             time.sleep(20)
         print_log("broadcast at time table.")
-        func()
+        broadcast()
 
 
 def main():
@@ -34,14 +34,18 @@ def main():
     print_log("By MikuNotFoundException.")
     print_log("QQ:814980678")
     print_log("Starting CQHttp...")
-    thread = threading.Thread(target=main_loop, args=(broadcast,))
+    thread = threading.Thread(target=main_loop)
     print_log("Starting daemon thread..")
     thread.start()
     bot.run(host=POST_ADDRESS, port=POST_PORT)
 
 
 @command(name="broadcast", help="进行广播")
-def broadcast(bot: CQHttp=bot, context=None):
+def broadcast_cmd(bot: CQHttp=bot, context=None):
+    broadcast()
+
+
+def broadcast():
     print_log("broadcasting..")
     countdown_list = get_countdown_list()
     from datetime import datetime
@@ -54,6 +58,8 @@ def broadcast(bot: CQHttp=bot, context=None):
         delta: timedelta = exp_time-today
         mouths = delta.days//30
         days = delta.days % 30
+        if delta.days < 0:
+            continue
         text = "距离 %s 还有 %d 天 (%d个月%s)." % (
             name, delta.days, mouths, ("%d天" % days) if days != 0 else "整")
         print_log(text)
