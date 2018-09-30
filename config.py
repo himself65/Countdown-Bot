@@ -8,15 +8,26 @@ SECRET = ""
 POST_ADDRESS = "0.0.0.0"
 # 上报端口
 POST_PORT = 5002
-# 群号
-# 提供一个list,表示要进行广播的群
-GROUP_ID = [718459861]
 # 小时和分钟，24时制
-BROADCAST_HOUR = 8
-BROADCAST_MINUTE = 0
+BROADCAST_HOUR = 18
+BROADCAST_MINUTE = 27
 # 检查间隔
 CHECK_INTERVAL = 5
 # 执行延时
 EXECUTE_DELAY = 60
 # 列表地址
 LIST_URL = "https://gitee.com/ZhehaoMi/countdown/raw/master/countdown.json"
+
+# a sample for LIST
+SAMPLE = {
+    "718459861": [
+        {
+            "name": "NOIP 2018",
+            "date": "2018-11-10"
+        },
+        {
+            "name": "The man who changed China",
+            "date": "1926-8-17"
+        }
+    ]
+}
