@@ -100,7 +100,7 @@ def help(bot: CQHttp, context=None):
 def handle_message(context):
     print_log("handling message:{}".format(context))
     # print_log(context)
-    if context.get("group_id", -1) in config.GROUP_ID
+    if context.get("group_id", -1) in config.GROUP_ID:
         text: str = None
         # print_log(context["message"])
         # print_log(type(context["message"]))
