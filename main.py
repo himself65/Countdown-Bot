@@ -6,7 +6,7 @@ import time
 bot = CQHttp(api_root=config.API_URL, access_token=config.ACCESS_TOKEN)
 log = bot.logger
 commands = {
-
+    
 }
 
 
@@ -106,8 +106,8 @@ def main_loop():
 
 
 def input_loop():
-    while True:
-        command = input()
+    # while True:
+    #     command = input()
 
 
 from commands import *

@@ -9,11 +9,11 @@ POST_ADDRESS = "0.0.0.0"
 # 上报端口
 POST_PORT = 5002
 # 小时和分钟，24时制
-BROADCAST_HOUR = 18
-BROADCAST_MINUTE = 27
+BROADCAST_HOUR = 8
+BROADCAST_MINUTE = 0
 # 检查间隔
 CHECK_INTERVAL = 5
-# 执行延时
+# 执行延时 
 EXECUTE_DELAY = 60
 # 列表地址
 LIST_URL = "https://gitee.com/ZhehaoMi/countdown/raw/master/countdown.json"
