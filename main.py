@@ -26,14 +26,15 @@ def main_loop():
             print_log("checking... ")
             time.sleep(config.CHECK_INTERVAL)
         print_log("broadcast at time table.")
-        broadcast()
+        text = get_broadcast_content()
+        for group in config.GROUP_ID:
+            bot.send_group_msg(group_id=group, message=text)
         time.sleep(config.EXECUTE_DELAY)
 
 
 def input_loop():
     while True:
         command = input()
-        
 
 
 def main():
@@ -52,7 +53,9 @@ def main():
 
 @command(name="broadcast", help="进行广播")
 def broadcast_cmd(bot: CQHttp=bot, context=None):
-    broadcast()
+    print_log("broadcasting..")
+    for item in get_broadcast_content():
+        bot.send(context, item)
 
 
 @command(name="reload", help="重新加载配置文件")
@@ -65,8 +68,9 @@ def reload_config(bot, context):
         print("%s = %s" % (item, getattr(config, item)))
 
 
-def broadcast():
-    print_log("broadcasting..")
+def get_broadcast_content():
+    # print_log("broadcasting..")
+    result = []
     countdown_list = get_countdown_list()
     from datetime import datetime
     from datetime import timedelta
@@ -83,7 +87,7 @@ def broadcast():
         text = "距离 %s 还有 %d 天 (%d个月%s)." % (
             name, delta.days, mouths, ("%d天" % days) if days != 0 else "整")
         print_log(text)
-        bot.send_group_msg(group_id=config.GROUP_ID, message=text)
+        result.append(text)
 
 
 @command(name="help", help="查看帮助")
@@ -96,18 +100,19 @@ def help(bot: CQHttp, context=None):
 def handle_message(context):
     print_log("handling message:{}".format(context))
     # print_log(context)
-    text: str = None
-    # print_log(context["message"])
-    # print_log(type(context["message"]))
-    import cqhttp
-    if type(context["message"]) is str:
-        text = context["message"]
-    elif context["message"][0]["type"] == "text":
-        text: str = context["message"][0]["data"]["text"]
-    if text is not None and text.startswith("/"):
-        command = text[1:]
-        if command in commands:
-            commands[command][1].__call__(bot, context)
+    if context.get("group_id", -1) in config.GROUP_ID
+        text: str = None
+        # print_log(context["message"])
+        # print_log(type(context["message"]))
+        import cqhttp
+        if type(context["message"]) is str:
+            text = context["message"]
+        elif context["message"][0]["type"] == "text":
+            text: str = context["message"][0]["data"]["text"]
+        if text is not None and text.startswith("/"):
+            command = text[1:]
+            if command in commands:
+                commands[command][1].__call__(bot, context)
 
 
 if __name__ == "__main__":

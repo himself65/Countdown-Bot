@@ -9,7 +9,8 @@ POST_ADDRESS = "0.0.0.0"
 # 上报端口
 POST_PORT = 5002
 # 群号
-GROUP_ID = 718459861
+# 提供一个list,表示要进行广播的群
+GROUP_ID = [718459861]
 # 小时和分钟，24时制
 BROADCAST_HOUR = 16
 BROADCAST_MINUTE = 45
