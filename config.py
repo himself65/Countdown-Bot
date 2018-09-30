@@ -10,8 +10,12 @@ POST_ADDRESS = "0.0.0.0"
 POST_PORT = 5002
 # 群号
 GROUP_ID = 718459861
-#小时和分钟，24时制
-BROADCAST_HOUR = 22
-BROADCAST_MINUTE = 4
+# 小时和分钟，24时制
+BROADCAST_HOUR = 16
+BROADCAST_MINUTE = 45
+# 检查间隔
+CHECK_INTERVAL = 5
+# 执行延时
+EXECUTE_DELAY = 60
 # 列表地址
 LIST_URL = "https://gitee.com/ZhehaoMi/countdown/raw/master/countdown.json"

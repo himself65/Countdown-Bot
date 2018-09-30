@@ -1,9 +1,9 @@
 from util import print_log, get_countdown_list
 from cqhttp import CQHttp
-from config import *
+import config
 import threading
 import time
-bot = CQHttp(api_root=API_URL, access_token=ACCESS_TOKEN)
+bot = CQHttp(api_root=config.API_URL, access_token=config.ACCESS_TOKEN)
 log = bot.logger
 commands = {
 
@@ -21,13 +21,19 @@ def main_loop():
         while True:
             from datetime import datetime
             curr = datetime.now()
-            if curr.hour == BROADCAST_HOUR and curr.minute == BROADCAST_MINUTE:
+            if curr.hour == config.BROADCAST_HOUR and curr.minute == config.BROADCAST_MINUTE:
                 break
             print_log("checking... ")
-            time.sleep(20)
+            time.sleep(config.CHECK_INTERVAL)
         print_log("broadcast at time table.")
         broadcast()
-        time.sleep(60)
+        time.sleep(config.EXECUTE_DELAY)
+
+
+def input_loop():
+    while True:
+        command = input()
+        
 
 
 def main():
@@ -38,12 +44,25 @@ def main():
     thread = threading.Thread(target=main_loop)
     print_log("Starting daemon thread..")
     thread.start()
-    bot.run(host=POST_ADDRESS, port=POST_PORT)
+    input_thread = threading.Thread(target=input_loop)
+    print_log("Starting input thread..")
+    input_thread.start()
+    bot.run(host=config.POST_ADDRESS, port=config.POST_PORT)
 
 
 @command(name="broadcast", help="进行广播")
 def broadcast_cmd(bot: CQHttp=bot, context=None):
     broadcast()
+
+
+@command(name="reload", help="重新加载配置文件")
+def reload_config(bot, context):
+    import importlib
+    importlib.reload(config)
+    for item in dir(config):
+        if item.startswith("__"):
+            continue
+        print("%s = %s" % (item, getattr(config, item)))
 
 
 def broadcast():
@@ -64,7 +83,7 @@ def broadcast():
         text = "距离 %s 还有 %d 天 (%d个月%s)." % (
             name, delta.days, mouths, ("%d天" % days) if days != 0 else "整")
         print_log(text)
-        bot.send_group_msg(group_id=GROUP_ID, message=text)
+        bot.send_group_msg(group_id=config.GROUP_ID, message=text)
 
 
 @command(name="help", help="查看帮助")
@@ -76,13 +95,19 @@ def help(bot: CQHttp, context=None):
 @bot.on_message()
 def handle_message(context):
     print_log("handling message:{}".format(context))
-    print_log(context)
-    if context["message"][0]["type"] == "text":
+    # print_log(context)
+    text: str = None
+    # print_log(context["message"])
+    # print_log(type(context["message"]))
+    import cqhttp
+    if type(context["message"]) is str:
+        text = context["message"]
+    elif context["message"][0]["type"] == "text":
         text: str = context["message"][0]["data"]["text"]
-        if text.startswith("/"):
-            command = text[1:]
-            if command in commands:
-                commands[command][1].__call__(bot, context)
+    if text is not None and text.startswith("/"):
+        command = text[1:]
+        if command in commands:
+            commands[command][1].__call__(bot, context)
 
 
 if __name__ == "__main__":
