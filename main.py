@@ -88,6 +88,7 @@ def get_broadcast_content():
             name, delta.days, mouths, ("%d天" % days) if days != 0 else "整")
         print_log(text)
         result.append(text)
+    return result
 
 
 @command(name="help", help="查看帮助")
