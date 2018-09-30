@@ -52,7 +52,8 @@ def get_broadcast_content(broadcast_list):
         print_log(item)
         name = item["name"]
         exp_time = datetime.strptime(item["date"], "%Y-%m-%d")
-        delta: timedelta = exp_time-today+1
+        delta: timedelta = exp_time-today+timedelta(days=1)
+        # days=delta.days+1
         mouths = delta.days//30
         days = delta.days % 30
         if delta.days < 0:
