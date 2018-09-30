@@ -106,6 +106,7 @@ def main_loop():
 
 
 def input_loop():
+    pass
     # while True:
     #     command = input()
 
