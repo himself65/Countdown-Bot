@@ -6,7 +6,7 @@ import time
 bot = CQHttp(api_root=config.API_URL, access_token=config.ACCESS_TOKEN)
 log = bot.logger
 commands = {
-    
+
 }
 
 
@@ -41,7 +41,7 @@ def broadcast_at_group(group_id: int, content=None):
         bot.send_group_msg(group_id=group_id, message=item)
 
 
-def get_broadcast_content(broadcast_list:list):
+def get_broadcast_content(broadcast_list: list):
     # print_log("broadcasting..")
     result = []
     countdown_list = broadcast_list
@@ -79,10 +79,12 @@ def handle_message(context):
         elif context["message"][0]["type"] == "text":
             text: str = context["message"][0]["data"]["text"]
         if text is not None and text.startswith("/"):
-            command = text[1:]
-            print_log("execute command:"+command)
-            if command in commands:
-                commands[command][1].__call__(bot, context)
+            command = (text[1:]+" ").split(" ")
+            print_log("execute command: {}".format(command))
+
+            if command[0] in commands:
+                commands[command[0]][1].__call__(
+                    bot, context, command)
 
 
 @bot.on_request("group", "friend")

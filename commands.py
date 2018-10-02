@@ -3,7 +3,7 @@ from main import *
 
 
 @command(name="broadcast", help="进行广播")
-def broadcast_cmd(bot, context):
+def broadcast_cmd(bot, context, args=None):
     # print_log("broadcasting..")
     group_id = context.get("group_id", -1)
     if group_id != -1:
@@ -11,7 +11,7 @@ def broadcast_cmd(bot, context):
 
 
 @command(name="reload", help="重新加载配置文件")
-def reload_config(bot, context):
+def reload_config(bot, context, args=None):
     import importlib
     importlib.reload(config)
     for item in dir(config):
@@ -21,11 +21,65 @@ def reload_config(bot, context):
 
 
 @command(name="help", help="查看帮助")
-def help(bot: CQHttp, context=None):
+def help(bot: CQHttp, context=None, args=None):
     bot.send(context, "".join(
         map(lambda x: x[0]+" --- "+x[1][0]+"\n", commands.items())))
 
 
 @command(name="阿克", help="阿克")
-def ak(bot: CQHttp, context=None):
+def ak(bot: CQHttp, context=None, args=None):
     bot.send(context, "您阿克了！")
+
+
+@command(name="爆零", help="qwq")
+def zero(bot: CQHttp, context=None, args=None):
+    bot.send(context, "您不会爆零的qwq")
+
+
+@command(name="oier", help="执行oierdb查询(http://bytew.net/OIer),/oier 姓名")
+def oier_query(bot: CQHttp, context=None, args=None):
+    print_log("querying "+str(args))
+    if len(args) < 2:
+        bot.send(context, "请输入姓名qwq")
+        return
+    import threading
+
+    def query():
+        from util import print_log
+        # print_log("querying "+args[1])
+        text = "查询到以下数据:\n"
+        # bot.send(context,"查询到以下数据:")
+        import oierdb
+        count = 0
+        for item in oierdb.fetch(args[1]):
+            print_log("item:{}".format(item))
+            text += "姓名:%s\n性别:%s\n" % (item["name"],
+                                        {-1: "女", 1: "男"}.get(int(item["sex"]), "未知"))
+            # text+="获得奖项:\n"
+            awards = list(enumerate(eval(item["awards"])))
+            for index, award in awards:
+                # print_log(award)
+                # print_log(type(award))
+                for k, v in award.items():
+                    if type(v) == type(str):
+                        award[k] = award[k].strip()
+                format_str = "在<{province}>{school}<{grade}>时参加<{contest}>以{score}分(全国排名{rank})的成绩获得<{type}>\n"
+                text += format_str.format(grade=award["grade"],
+                                          province=award["province"],
+                                          rank=award["rank"],
+                                          score=award["score"],
+                                          school=award["school"],
+                                          type=award["award_type"],
+                                          contest=award["identity"]
+                                          )
+            count += 1
+            if count >= 3:
+                text += "\n余下记录太长，请去原网站查看."
+                break
+            text+='\n'
+        while text[-1] == "\n":
+            text = text[:-1]
+        bot.send(context, text)
+    thread: threading.Thread = threading.Thread(target=query)
+    # query()
+    thread.start()
