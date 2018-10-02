@@ -191,10 +191,7 @@ def oiwiki_query(bot: CQHttp, context=None, args=None):
     "距离": "https://oi-wiki.org/misc/distance/", "字节顺序": "https://oi-wiki.org/misc/endianness/",
     "复杂度": "https://oi-wiki.org/misc/complexity/", "读入输出优化": "https://oi-wiki.org/misc/io/",
     "离散化": "https://oi-wiki.org/misc/discrete/", "树上启发式合并": "https://oi-wiki.org/misc/dsu-on-tree/" }   
-    out_ones = "OI Wiki 的相关页面：\n"
-    for i in wikipages.keys():
-        if i in args:
-            out_ones += "%s %s\n" % (i, wikipages[i])
-    if out_ones == "OI Wiki 的相关页面：\n":
-        out_ones = "OI Wiki 中无结果"
-    bot.send(context, out_ones)
+    if args in wikipages:
+        bot.send(context, "OI Wiki 中有名为「%s」的页面：%s" % (args, wikipages[args]))
+    else:
+        bot.send(context, "OI Wiki 中无结果")
