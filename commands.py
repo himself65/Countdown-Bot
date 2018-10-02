@@ -24,3 +24,8 @@ def reload_config(bot, context):
 def help(bot: CQHttp, context=None):
     bot.send(context, "".join(
         map(lambda x: x[0]+" --- "+x[1][0]+"\n", commands.items())))
+
+
+@command(name="阿克", help="阿克")
+def ak(bot: CQHttp, context=None):
+    bot.send(context, "您阿克了！")

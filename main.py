@@ -41,7 +41,7 @@ def broadcast_at_group(group_id: int, content=None):
         bot.send_group_msg(group_id=group_id, message=item)
 
 
-def get_broadcast_content(broadcast_list):
+def get_broadcast_content(broadcast_list:list):
     # print_log("broadcasting..")
     result = []
     countdown_list = broadcast_list
