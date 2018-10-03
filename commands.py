@@ -36,7 +36,7 @@ def zero(bot: CQHttp, context=None, args=None):
     bot.send(context, "您不会爆零的qwq")
 
 
-@command(name="oier", help="执行oierdb查询(http://bytew.net/OIer),/oier 姓名")
+@command(name="oier", help="执行oierdb查询(http://bytew.net/OIer)  /oier 姓名")
 def oier_query(bot: CQHttp, context=None, args=None):
     print_log("querying "+str(args))
     if len(args) < 2:

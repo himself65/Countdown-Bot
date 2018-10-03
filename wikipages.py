@@ -1,4 +1,4 @@
-    wikipages = {"枚举": "https://oi-wiki.org/basic/enumerate/", "模拟": "https://oi-wiki.org/basic/simulate/",
+wikipages = {"枚举": "https://oi-wiki.org/basic/enumerate/", "模拟": "https://oi-wiki.org/basic/simulate/",
                  "分治": "https://oi-wiki.org/basic/divide-and-conquer/", "贪心": "https://oi-wiki.org/basic/greedy/",
                  "排序": "https://oi-wiki.org/basic/sort/", "表达式求值": "https://oi-wiki.org/basic/expression/",
                  "二分": "https://oi-wiki.org/basic/binary/", "构造": "https://oi-wiki.org/basic/construction/",
