@@ -50,8 +50,11 @@ def oier_query(bot: CQHttp, context=None, args=None):
         text = "查询到以下数据:\n"
         # bot.send(context,"查询到以下数据:")
         import oierdb
+        from random import shuffle
         count = 0
-        for item in oierdb.fetch(args[1]):
+        items = oierdb.fetch(args[1])
+        shuffle(items)
+        for item in items:
             print_log("item:{}".format(item))
             text += "姓名:%s\n性别:%s\n" % (item["name"],
                                         {-1: "女", 1: "男"}.get(int(item["sex"]), "未知"))
@@ -73,7 +76,7 @@ def oier_query(bot: CQHttp, context=None, args=None):
                                           contest=award["identity"]
                                           )
             count += 1
-            if count >= 3:
+            if count >= 5:
                 text += "\n余下记录太长，请去原网站查看."
                 break
             text += '\n'
@@ -92,7 +95,7 @@ def oiwiki_query(bot: CQHttp, context=None, args=None):
     import config
     import json
     wikipages = None
-    decoder=json.JSONDecoder()
+    decoder = json.JSONDecoder()
     with urllib.request.urlopen(config.OIWIKI_LIST_URL) as page:
         wikipages = decoder.decode(page.read().decode("utf-8"))
     query_text = args[1]
