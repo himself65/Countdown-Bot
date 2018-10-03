@@ -36,7 +36,7 @@ def zero(bot: CQHttp, context=None, args=None):
     bot.send(context, "您不会爆零的qwq")
 
 
-@command(name="oier", help="执行oierdb查询(http://bytew.net/OIer)  /oier 姓名")
+@command(name="oier", help="执行oierdb查询(http://bytew.net/OIer)")
 def oier_query(bot: CQHttp, context=None, args=None):
     print_log("querying "+str(args))
     if len(args) < 2:
@@ -87,7 +87,14 @@ def oier_query(bot: CQHttp, context=None, args=None):
 
 @command(name="wiki", help="求助 OI Wiki(https://oi-wiki.org/)")
 def oiwiki_query(bot: CQHttp, context=None, args=None):
-    from wikipages import wikipages
+    # from wikipages import wikipages
+    import urllib
+    import config
+    import json
+    wikipages = None
+    decoder=json.JSONDecoder()
+    with urllib.request.urlopen(config.OIWIKI_LIST_URL) as page:
+        wikipages = decoder.decode(page.read().decode("utf-8"))
     query_text = args[1]
     if query_text in wikipages:
         bot.send(context, "OI Wiki 中有名为「%s」的页面：%s" %

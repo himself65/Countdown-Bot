@@ -13,11 +13,11 @@ BROADCAST_HOUR = 6
 BROADCAST_MINUTE = 0
 # 检查间隔
 CHECK_INTERVAL = 5
-# 执行延时 
+# 执行延时
 EXECUTE_DELAY = 60
 # 列表地址
 LIST_URL = "https://raw.githubusercontent.com/ZhehaoMi/countdown/master/countdown.json"
-
+OIWIKI_LIST_URL = "https://raw.githubusercontent.com/ZhehaoMi/countdown/master/wikipages.json"
 # a sample for LIST
 SAMPLE = {
     "718459861": [
