@@ -100,7 +100,7 @@ def oiwiki_query(bot: CQHttp, context=None, args=None):
         wikipages = decoder.decode(page.read().decode("utf-8"))
     query_text = args[1]
     if query_text in wikipages:
-        bot.send(context, "OI Wiki 中有名为「%s」的页面：%s" %
+        bot.send(context, "OI Wiki 列表中有名为「%s」的页面：%s" %
                  (query_text, wikipages[query_text]))
     else:
-        bot.send(context, "OI Wiki 中无结果")
+        bot.send(context, "OI Wiki 列表中无结果，请访问：https://oi-wiki.org/ 查看更多内容")
