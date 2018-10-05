@@ -34,7 +34,10 @@ def ak(bot: CQHttp, context=None, args=None):
 @command(name="爆零", help="qwq")
 def zero(bot: CQHttp, context=None, args=None):
     bot.send(context, "您不会爆零的qwq")
-
+    
+@command(name="凉了", help="凉了?")
+def zero(bot: CQHttp, context=None, args=None):
+    bot.send(context, "qwq您不会凉的~")
 
 @command(name="oier", help="执行oierdb查询(http://bytew.net/OIer)")
 def oier_query(bot: CQHttp, context=None, args=None):
