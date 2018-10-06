@@ -93,8 +93,6 @@ def handle_message(context):
             if command[0] in commands:
                 commands[command[0]][1].__call__(
                     bot, context, command)
-            else:
-                bot.send(context,"未知指令: %s"%command[0])
         if text is not None:
             for listener in message_listeners:
                 listener.__call__(bot,context,text)
