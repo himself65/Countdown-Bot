@@ -9,18 +9,22 @@ commands = {
 
 }
 
-message_listeners=[
+message_listeners = [
 
 ]
+
 
 def command(name, help=""):
     def inner(func):
         commands[name] = (help, func)
     return inner
+
+
 def message_listener():
     def inner(func):
         message_listeners.append(func)
     return inner
+
 
 def main():
     print_log("Starting countdown-bot.")
@@ -64,12 +68,12 @@ def get_broadcast_content(broadcast_list: list):
         days = delta.days % 30
         if delta.days < 0:
             continue
-        text=""
+        text = ""
         if delta.days > 0:
             text = "距离 %s 还有 %d 天 (%d个月%s)." % (
                 name, delta.days, mouths, ("%d天" % days) if days != 0 else "整")
-        else :
-            text="今天是 %s " % (name)
+        else:
+            text = "今天是 %s " % (name)
         print_log(text)
         result.append(text)
     return result
@@ -85,16 +89,21 @@ def handle_message(context):
             text = context["message"]
         elif context["message"][0]["type"] == "text":
             text: str = context["message"][0]["data"]["text"]
-        
-        if text is not None and text.startswith(config.COMMAND_PREFIX):
-            command = (text[len(config.COMMAND_PREFIX):]+" ").split(" ")
+
+        def check_prefix(command):
+            for item in config.COMMAND_PREFIX:
+                if command.startswith(item):
+                    return item
+        prefix = check_prefix(test)
+        if text is not None and prefix is not None:
+            command = (text[len(prefix):]+" ").split(" ")
             print_log("execute command: {}".format(command))
             if command[0] in commands:
                 commands[command[0]][1].__call__(
                     bot, context, command)
         if text is not None:
             for listener in message_listeners:
-                listener.__call__(bot,context,text)
+                listener.__call__(bot, context, text)
 
 
 @bot.on_request("group", "friend")
