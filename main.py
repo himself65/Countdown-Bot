@@ -94,7 +94,7 @@ def handle_message(context):
             for item in config.COMMAND_PREFIX:
                 if command.startswith(item):
                     return item
-        prefix = check_prefix(test)
+        prefix = check_prefix(text)
         if text is not None and prefix is not None:
             command = (text[len(prefix):]+" ").split(" ")
             print_log("execute command: {}".format(command))
