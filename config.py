@@ -18,6 +18,9 @@ EXECUTE_DELAY = 60
 # 列表地址
 LIST_URL = "https://raw.githubusercontent.com/ZhehaoMi/countdown/master/countdown.json"
 OIWIKI_LIST_URL = "https://raw.githubusercontent.com/ZhehaoMi/countdown/master/wikipages.json"
+#一句话被重复几次后会进行复读
+REPEAT_TIME_LIMIT=3
+
 SAMPLE = {
     "718459861": [
         {

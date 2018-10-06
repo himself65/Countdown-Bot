@@ -9,12 +9,18 @@ commands = {
 
 }
 
+message_listeners=[
+
+]
 
 def command(name, help=""):
     def inner(func):
         commands[name] = (help, func)
     return inner
-
+def message_listener():
+    def inner(func):
+        message_listeners.append(func)
+    return inner
 
 def main():
     print_log("Starting countdown-bot.")
@@ -72,16 +78,14 @@ def get_broadcast_content(broadcast_list: list):
 @bot.on_message()
 def handle_message(context):
     print_log("handling message:{}".format(context))
-    # print_log(context)
     if "group_id" in context:
         text: str = None
-        # print_log(context["message"])
-        # print_log(type(context["message"]))
         import cqhttp
         if type(context["message"]) is str:
             text = context["message"]
         elif context["message"][0]["type"] == "text":
             text: str = context["message"][0]["data"]["text"]
+        
         if text is not None and text.startswith("/"):
             command = (text[1:]+" ").split(" ")
             print_log("execute command: {}".format(command))
@@ -89,6 +93,11 @@ def handle_message(context):
             if command[0] in commands:
                 commands[command[0]][1].__call__(
                     bot, context, command)
+            else:
+                bot.send(context,"未知指令: %s"%command[0])
+        if text is not None:
+            for listener in message_listeners:
+                listener.__call__(bot,context,text)
 
 
 @bot.on_request("group", "friend")
@@ -119,6 +128,6 @@ def input_loop():
 
 
 from commands import *
-
+from events import *
 if __name__ == "__main__":
     main()
