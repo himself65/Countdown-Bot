@@ -22,7 +22,8 @@ def reload_config(bot, context, args=None):
 
 @command(name="help", help="查看帮助")
 def help(bot: CQHttp, context=None, args=None):
-    bot.send(context, "https://gitee.com/yutong_java/Countdown-Bot\n".join(
+    bot.send(context, "https://gitee.com/yutong_java/Countdown-Bot")
+    bot.send(context, "".join(
         map(lambda x: x[0]+" --- "+x[1][0]+"\n", commands.items())))
 
 
@@ -34,10 +35,12 @@ def ak(bot: CQHttp, context=None, args=None):
 @command(name="爆零", help="qwq")
 def zero(bot: CQHttp, context=None, args=None):
     bot.send(context, "您不会爆零的qwq")
-    
+
+
 @command(name="凉了", help="凉了?")
 def zero(bot: CQHttp, context=None, args=None):
     bot.send(context, "qwq您不会凉的~")
+
 
 @command(name="oier", help="执行oierdb查询(http://bytew.net/OIer)")
 def oier_query(bot: CQHttp, context=None, args=None):
