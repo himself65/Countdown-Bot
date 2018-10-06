@@ -22,7 +22,7 @@ def reload_config(bot, context, args=None):
 
 @command(name="help", help="查看帮助")
 def help(bot: CQHttp, context=None, args=None):
-    bot.send(context, "".join(
+    bot.send(context, "https://gitee.com/yutong_java/Countdown-Bot\n".join(
         map(lambda x: x[0]+" --- "+x[1][0]+"\n", commands.items())))
 
 
