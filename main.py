@@ -86,10 +86,9 @@ def handle_message(context):
         elif context["message"][0]["type"] == "text":
             text: str = context["message"][0]["data"]["text"]
         
-        if text is not None and text.startswith("/"):
-            command = (text[1:]+" ").split(" ")
+        if text is not None and text.startswith(config.COMMAND_PREFIX):
+            command = (text[len(config.COMMAND_PREFIX):]+" ").split(" ")
             print_log("execute command: {}".format(command))
-
             if command[0] in commands:
                 commands[command[0]][1].__call__(
                     bot, context, command)

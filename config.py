@@ -20,7 +20,8 @@ LIST_URL = "https://raw.githubusercontent.com/ZhehaoMi/countdown/master/countdow
 OIWIKI_LIST_URL = "https://raw.githubusercontent.com/ZhehaoMi/countdown/master/wikipages.json"
 #一句话被重复几次后会进行复读
 REPEAT_TIME_LIMIT=3
-
+#指令前缀
+COMMAND_PREFIX=":"
 SAMPLE = {
     "718459861": [
         {
