@@ -1,6 +1,7 @@
 from main import message_listener
 from cqhttp import CQHttp
 from util import print_log
+import config
 last_message = None
 repeat_time = 0
 
@@ -13,7 +14,7 @@ def repeat_handler(bot: CQHttp, context, message):
     else:
         last_message = message
         repeat_time = 1
-    if repeat_time >= 3:
+    if repeat_time >= config.REPEAT_TIME_LIMIT:
         bot.send(context, message)
         repeat_time = 0
         last_message = None
