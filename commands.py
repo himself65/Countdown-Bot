@@ -22,9 +22,15 @@ def reload_config(bot, context, args=None):
 
 @command(name="help", help="查看帮助")
 def help(bot: CQHttp, context=None, args=None):
-    bot.send(context, "https://gitee.com/yutong_java/Countdown-Bot")
+
     bot.send(context, "".join(
         map(lambda x: x[0]+" --- "+x[1][0]+"\n", commands.items())))
+
+
+@command(name="about", help="关于")
+def about(bot: CQHttp, context=None, args=None):
+    bot.send(context, "https://gitee.com/yutong_java/Countdown-Bot")
+    bot.send(context, "by MikuNotFoundException")
 
 
 @command(name="阿克", help="阿克")
