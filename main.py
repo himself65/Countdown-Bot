@@ -70,10 +70,13 @@ def get_broadcast_content(broadcast_list: list):
             continue
         text = ""
         if delta.days > 0:
-            text = "距离 %s 还有 %d 天 (%d个月%s)." % (
-                name, delta.days, mouths, ("%d天" % days) if days != 0 else "整")
+            if mounths > 0:
+                text = "距离 %s 还有 %d 天 (%d个月%s)." % (
+                    name, delta.days, mouths, ("%d天" % days) if days != 0 else "整")
+            else:
+                text = "距离 %s 还有 %d 天." % (name, delta.days)
         else:
-            text = "今天是 %s " % (name)
+            text = "今天是 %s ." % (name)
         print_log(text)
         result.append(text)
     return result
