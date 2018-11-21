@@ -11,8 +11,10 @@ Hitokoto广播时间: {hitokoto_hour:0>2d}:{hitokoto_minute:0>2d}
 输入 [指令前缀]help 查看帮助""".format(
             broadcast_hour=config.BROADCAST_HOUR, broadcast_minute=config.BROADCAST_MINUTE,
             hitokoto_hour=config.HITOKOTO_HOUR, hitokoto_minute=config.HITOKOTO_MINUTE,
-            hitokoto_groups="".join(map(lambda x: x+" ",config.HITOKOTO_GROUPS)),
-            command_prefix="".join(map(lambda x: x+" ",config.COMMAND_PREFIX)),
+            hitokoto_groups="".join(
+                map(lambda x: x+" ", config.HITOKOTO_GROUPS)),
+            command_prefix="".join(
+                map(lambda x: x+" ", config.COMMAND_PREFIX)),
         )
     bot.send(context, to_send)
 
@@ -138,10 +140,10 @@ def hitokoto(bot: CQHttp, context=None, args=None):
     import util
     bot.send(context, util.get_hitokoto())
 
-@command(name="exec",help="在Docker中执行一行Python3代码")
-def exec_python_code(bot:CQHttp,context=None,args=None):
+
+@command(name="exec", help="在Docker中执行一行Python3代码")
+def exec_python_code(bot: CQHttp, context=None, args=None):
     try:
         from python_runner import *
     except Exception as ex:
         bot.send("无法启用Python runner : {}".format(ex))
-    
