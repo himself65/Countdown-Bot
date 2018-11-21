@@ -144,6 +144,10 @@ def hitokoto(bot: CQHttp, context=None, args=None):
 @command(name="exec", help="在Docker中执行一行Python3代码")
 def exec_python_code(bot: CQHttp, context=None, args=None):
     try:
-        from python_runner import *
+        from python_runner import run_python_in_docker
     except Exception as ex:
-        bot.send("无法启用Python runner : {}".format(ex))
+        bot.send(context, "无法启用Python runner: {}".format(ex))
+
+    def callback(msg):
+        bot.send(context, msg)
+    run_python_in_docker(callback, "".join(map(lambda x: x+" ", args)))

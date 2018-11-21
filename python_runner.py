@@ -1,8 +1,11 @@
-from main import *
-
-
-def run_python_in_docker(code, callback, timeout):
-    pass
+import docker
+import os
+import tempfile
+import time
+import inspect
+import ctypes
+from threading import Thread
+from main import config
 
 
 def _async_raise(tid, exctype):
@@ -26,7 +29,7 @@ def stop_thread(thread):
     _async_raise(thread.ident, SystemExit)
 
 
-def execute_daemon_calc(bot: CQHttp, context, container):
+def execute_daemon_calc(callback, container):
     container.start()
     container.reload()
     while container.status == "running":
@@ -35,13 +38,17 @@ def execute_daemon_calc(bot: CQHttp, context, container):
     container.remove()
     if len(output) > config.OUTPUT_LENGTH_LIMIT:
         output = output[:config.OUTPUT_LENGTH_LIMIT]+"[超出长度限制部分已截断]"
-    bot.send(context, output)
+    callback(output)
     # print("{} = {}".format(expression, output))
 
 
-def keeper_thread(thread, bot: CQHttp, context, container, code):
-    time.sleep(config.OUTPUT_LENGTH_LIMIT/1000)
-    container.reload()
+def keeper_thread(thread, callback,  container, code):
+    time.sleep(config.EXECUTE_TIME_LIMIT/1000)
+    try:
+        container.reload()
+    except Exception as ex:
+        print(ex)
+        return
     print("Waiting timed out , status = {}".format(container.status))
     if container.status == "running":
         stop_thread(thread)
@@ -50,24 +57,26 @@ def keeper_thread(thread, bot: CQHttp, context, container, code):
             container.remove()
         except Exception:
             pass
-        bot.send(context, "代码 '"+code+"' 执行超时.")
+        callback("代码 '"+code+"' 执行超时.")
         print("Killing")
 
 
-def execute_calc(bot: CQHttp, context, code):
+def run_python_in_docker(callback, code):
     client = docker.from_env()
-    if not os.path.exists("/tmp"):
-        os.makedirs("/tmp")
-    file_name = "{}-temp.py".format(int(time.time()))
-    with open("/tmp/{}".format(file_name), "w") as file:
+    # client = docker.DockerClient(base_url="tcp://192.168.10.134:2375")
+    tmp_dir = tempfile.mkdtemp()
+    file_name = "temp.py"
+    with open(os.path.join(tmp_dir, file_name), "w") as file:
         file.write("{}".format(code))
     container = client.containers.create("python", "python /temp/{}".format(
-        file_name), tty=True, detach=False,  volumes={"/tmp": {"bind": "/temp", "mode": "ro"}})
+        file_name), tty=True, detach=False,  volumes={"/tmp": {"bind": tmp_dir, "mode": "ro"}})
+    # container = client.containers.create("python", "uname -a".format(
+    #     file_name), tty=True, detach=False)
     thd = Thread(target=execute_daemon_calc, args=(
-        bot, context,  container))
+        callback, container))
     thd.setDaemon(True)
     thd.start()
     keeper = Thread(target=keeper_thread, args=(
-        thd, bot, context, container, code))
+        thd, callback, container, code))
     keeper.setDaemon(True)
     keeper.start()

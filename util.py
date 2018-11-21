@@ -30,3 +30,4 @@ def get_hitokoto():
     
 (Hitokoto ID:{id})""".format(text=data["hitokoto"], source=data["from"], id=data["id"])
     return to_send
+

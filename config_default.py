@@ -31,9 +31,9 @@ REPEAT_TIME_LIMIT = 3
 # 指令前缀
 COMMAND_PREFIX = ["--", "!!"]
 # 执行Python代码的输出长度限制
-OUTPUT_LENGTH_LIMIT = 50
+OUTPUT_LENGTH_LIMIT = 200
 # 执行Python代码的时间限制(ms)
-EXECUTE_TIME_LIMIT=2000
+EXECUTE_TIME_LIMIT = 2000
 SAMPLE = {
     "718459861": [
         {
