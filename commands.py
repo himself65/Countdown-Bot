@@ -150,4 +150,4 @@ def exec_python_code(bot: CQHttp, context=None, args=None):
 
     def callback(msg):
         bot.send(context, msg)
-    run_python_in_docker(callback, "".join(map(lambda x: x+" ", args)))
+    run_python_in_docker(callback, "".join(map(lambda x: x+" ", args[1:])))
