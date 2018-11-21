@@ -6,7 +6,7 @@ import inspect
 import ctypes
 from threading import Thread
 from main import config
-
+from util import print_log
 
 def _async_raise(tid, exctype):
     """raises the exception, performs cleanup if needed"""
@@ -47,9 +47,9 @@ def keeper_thread(thread, callback,  container, code):
     try:
         container.reload()
     except Exception as ex:
-        print(ex)
+        print_log(ex)
         return
-    print("Waiting timed out , status = {}".format(container.status))
+    print_log("Waiting timed out , status = {}".format(container.status))
     if container.status == "running":
         stop_thread(thread)
         try:
@@ -58,7 +58,7 @@ def keeper_thread(thread, callback,  container, code):
         except Exception:
             pass
         callback("代码 '"+code+"' 执行超时.")
-        print("Killing")
+        print_log("Killing")
 
 
 def run_python_in_docker(callback, code):
@@ -68,6 +68,7 @@ def run_python_in_docker(callback, code):
     file_name = "temp.py"
     with open(os.path.join(tmp_dir, file_name), "w") as file:
         file.write("{}".format(code))
+    print_log("Container created.")
     container = client.containers.create("python", "python /temp/{}".format(
         file_name), tty=True, detach=False,  volumes={"/tmp": {"bind": tmp_dir, "mode": "ro"}})
     # container = client.containers.create("python", "uname -a".format(
