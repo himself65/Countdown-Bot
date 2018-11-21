@@ -1,6 +1,11 @@
-from util import print_log, get_countdown_list
 from cqhttp import CQHttp
-import config
+
+try:
+    import config
+except ModuleNotFoundError as ex:
+    import config_default as config
+from util import print_log, get_countdown_list, get_hitokoto
+
 import threading
 import time
 bot = CQHttp(api_root=config.API_URL, access_token=config.ACCESS_TOKEN)
@@ -31,13 +36,25 @@ def main():
     print_log("By MikuNotFoundException.")
     print_log("QQ:814980678")
     # 启动主循环线程
-    loop_thread = threading.Thread(target=main_loop)
-    print_log("Starting daemon thread..")
-    loop_thread.start()
-    # 启动输入线程
-    input_thread = threading.Thread(target=input_loop)
-    print_log("Starting input thread..")
-    input_thread.start()
+
+    def execute_broadcast():
+        text = get_countdown_list(config.LIST_URL)
+        for group in text:
+            broadcast_at_group(int(group), text)
+
+    def execute_hitokoto_broadcast():
+        message = get_hitokoto()
+        for group_id in config.HITOKOTO_GROUPS:
+            bot.send_msg(message_type="group", group_id=int(
+                group_id), message=message)
+
+    broadcast_thread = threading.Thread(target=schedule_loop, args=(config.BROADCAST_HOUR, config.BROADCAST_MINUTE,
+                                                                    config.CHECK_INTERVAL, config.EXECUTE_DELAY, execute_broadcast, "Countdown broadcast"))
+    hitokoto_thread = threading.Thread(target=schedule_loop, args=(config.HITOKOTO_HOUR, config.HITOKOTO_MINUTE,
+                                                                   config.CHECK_INTERVAL, config.EXECUTE_DELAY, execute_hitokoto_broadcast, "Hitokoto broadcast"))
+
+    broadcast_thread.start()
+    hitokoto_thread.start()
     # 启动CQ Bot
     print_log("Starting CQHttp...")
     bot.run(host=config.POST_ADDRESS, port=config.POST_PORT)
@@ -46,7 +63,7 @@ def main():
 def broadcast_at_group(group_id: int, content=None):
     if content is None:
         content = get_countdown_list()
-    print_log("broadcasting at group %d with content %s" % (group_id, content))
+    print_log("Broadcasting at group %d with content %s" % (group_id, content))
     for item in get_broadcast_content(content[str(group_id)]):
         bot.send_group_msg(group_id=group_id, message=item)
 
@@ -105,7 +122,7 @@ def handle_message(context):
                 commands[command[0]][1].__call__(
                     bot, context, command)
             else:
-                bot.send(context,"未知指令: %s"%command[0])
+                bot.send(context, "未知指令: %s" % command[0])
         if text is not None:
             for listener in message_listeners:
                 listener.__call__(bot, context, text)
@@ -116,26 +133,22 @@ def handle_group_invite(context):
     return {"approve": True}
 
 
-def main_loop():
+def schedule_loop(hour: int, minute: int, check_interval: int, execute_delay: int, todo, name="Schedule Task"):
     while True:
         while True:
             from datetime import datetime
             curr = datetime.now()
-            if curr.hour == config.BROADCAST_HOUR and curr.minute == config.BROADCAST_MINUTE:
+            if curr.hour == hour and curr.minute == minute:
                 break
-            print_log("checking... ")
-            time.sleep(config.CHECK_INTERVAL)
-        print_log("broadcast at time table.")
-        text = get_countdown_list()
-        for group in text:
-            broadcast_at_group(int(group), text)
-        time.sleep(config.EXECUTE_DELAY)
+            print_log("Checking '"+name+"'")
+            time.sleep(check_interval)
+        print_log("Executing '"+name+"'")
+        todo()
+        time.sleep(execute_delay)
 
 
 def input_loop():
     pass
-    # while True:
-    #     command = input()
 
 
 from commands import *

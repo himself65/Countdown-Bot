@@ -1,7 +1,6 @@
-from main import message_listener
+from main import message_listener,config
 from cqhttp import CQHttp
 from util import print_log
-import config
 last_message = None
 repeat_time = 0
 

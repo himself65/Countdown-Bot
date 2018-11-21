@@ -1,5 +1,20 @@
-import config
 from main import *
+
+
+@command(name="status", help="查看状态")
+def show_status(bot: CQHttp, context, args):
+    to_send =\
+        """倒计时广播时间: {broadcast_hour:0>2d}:{broadcast_minute:0>2d}
+Hitokoto广播时间: {hitokoto_hour:0>2d}:{hitokoto_minute:0>2d}
+进行Hitokoto广播的群: {hitokoto_groups}
+指令前缀: {command_prefix}
+输入 [指令前缀]help 查看帮助""".format(
+            broadcast_hour=config.BROADCAST_HOUR, broadcast_minute=config.BROADCAST_MINUTE,
+            hitokoto_hour=config.HITOKOTO_HOUR, hitokoto_minute=config.HITOKOTO_MINUTE,
+            hitokoto_groups="".join(map(lambda x: x+" ",config.HITOKOTO_GROUPS)),
+            command_prefix="".join(map(lambda x: x+" ",config.COMMAND_PREFIX)),
+        )
+    bot.send(context, to_send)
 
 
 @command(name="broadcast", help="进行广播")
@@ -116,3 +131,17 @@ def oiwiki_query(bot: CQHttp, context=None, args=None):
                  (query_text, wikipages[query_text]))
     else:
         bot.send(context, "OI Wiki 列表中无结果，请访问：https://oi-wiki.org/ 查看更多内容")
+
+
+@command(name="hitokoto", help="发送一言")
+def hitokoto(bot: CQHttp, context=None, args=None):
+    import util
+    bot.send(context, util.get_hitokoto())
+
+@command(name="exec",help="在Docker中执行一行Python3代码")
+def exec_python_code(bot:CQHttp,context=None,args=None):
+    try:
+        from python_runner import *
+    except Exception as ex:
+        bot.send("无法启用Python runner : {}".format(ex))
+    
