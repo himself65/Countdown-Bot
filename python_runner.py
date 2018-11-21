@@ -70,7 +70,7 @@ def run_python_in_docker(callback, code):
         file.write("{}".format(code))
     print_log("Container created.")
     container = client.containers.create("python", "python /temp/{}".format(
-        file_name), tty=True, detach=False,  volumes={"/tmp": {"bind": tmp_dir, "mode": "ro"}})
+        file_name), tty=True, detach=False,  volumes={tmp_dir: {"bind": "/temp", "mode": "ro"}})
     # container = client.containers.create("python", "uname -a".format(
     #     file_name), tty=True, detach=False)
     thd = Thread(target=execute_daemon_calc, args=(
