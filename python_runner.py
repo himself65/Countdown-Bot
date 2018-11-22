@@ -38,6 +38,8 @@ def execute_daemon_calc(callback, container):
     container.reload()
     while container.status == "running":
         container.reload()
+        import time
+        time.sleep(0.1)
     output = container.logs().decode("UTF-8")
     container.remove()
     if len(output) > config.OUTPUT_LENGTH_LIMIT:
