@@ -62,6 +62,7 @@ def keeper_thread(thread, callback,  container, code):
 
 
 def run_python_in_docker(callback, code):
+    print_log("Running .. '{}'".format(code))
     client = docker.from_env()
     # client = docker.DockerClient(base_url="tcp://192.168.10.134:2375")
     tmp_dir = tempfile.mkdtemp()
