@@ -1,4 +1,5 @@
 from main import *
+import re
 
 
 @command(name="status", help="查看状态")
@@ -150,4 +151,8 @@ def exec_python_code(bot: CQHttp, context=None, args=None):
 
     def callback(msg):
         bot.send(context, msg)
-    run_python_in_docker(callback, "".join(map(lambda x: x+" ", args[1:])))
+    code = "".join(map(lambda x: x+" ", args[1:]))
+    pattern = re.compile(r'&#(.*?);')
+    for item in pattern.findall(code):
+        code = code.replace("&#{};".format(item),bytes([int(item)]).decode("utf-8"))
+    run_python_in_docker(callback, code)
