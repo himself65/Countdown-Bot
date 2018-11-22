@@ -30,23 +30,23 @@ def message_listener():
         message_listeners.append(func)
     return inner
 
+def execute_broadcast():
+    text = get_countdown_list(config.LIST_URL)
+    for group in text:
+        broadcast_at_group(int(group), text)
+
+def execute_hitokoto_broadcast():
+    message = get_hitokoto()
+    for group_id in config.HITOKOTO_GROUPS:
+        bot.send_msg(message_type="group", group_id=int(
+            group_id), message=message)
+
 
 def main():
     print_log("Starting countdown-bot.")
     print_log("By MikuNotFoundException.")
     print_log("QQ:814980678")
     # 启动主循环线程
-
-    def execute_broadcast():
-        text = get_countdown_list(config.LIST_URL)
-        for group in text:
-            broadcast_at_group(int(group), text)
-
-    def execute_hitokoto_broadcast():
-        message = get_hitokoto()
-        for group_id in config.HITOKOTO_GROUPS:
-            bot.send_msg(message_type="group", group_id=int(
-                group_id), message=message)
 
     broadcast_thread = threading.Thread(target=schedule_loop, args=(config.BROADCAST_HOUR, config.BROADCAST_MINUTE,
                                                                     config.CHECK_INTERVAL, config.EXECUTE_DELAY, execute_broadcast, "Countdown broadcast"))
@@ -62,7 +62,7 @@ def main():
 
 def broadcast_at_group(group_id: int, content=None):
     if content is None:
-        content = get_countdown_list()
+        content = get_countdown_list(config.LIST_URL)
     print_log("Broadcasting at group %d with content %s" % (group_id, content))
     for item in get_broadcast_content(content[str(group_id)]):
         bot.send_group_msg(group_id=group_id, message=item)
