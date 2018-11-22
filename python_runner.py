@@ -11,6 +11,7 @@ from threading import Thread
 from main import config
 from util import print_log
 
+
 def _async_raise(tid, exctype):
     """raises the exception, performs cleanup if needed"""
     tid = ctypes.c_long(tid)
@@ -74,7 +75,7 @@ def run_python_in_docker(callback, code):
         file.write("{}".format(code))
     print_log("Container created.")
     container = client.containers.create("python", "python /temp/{}".format(
-        file_name), tty=True, detach=False,  volumes={tmp_dir: {"bind": "/temp", "mode": "ro"}},mem_limit="10m",memswap_limit="20m")
+        file_name), tty=True, detach=False,  volumes={tmp_dir: {"bind": "/temp", "mode": "ro"}}, mem_limit="10m", memswap_limit="20m", oom_kill_disable=True, nano_cpus=0.1)
     # container = client.containers.create("python", "uname -a".format(
     #     file_name), tty=True, detach=False)
     thd = Thread(target=execute_daemon_calc, args=(
