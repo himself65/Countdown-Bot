@@ -1,3 +1,6 @@
+#!/usr/bin/env python3
+# -*- coding: UTF-8 -*-
+
 from main import message_listener,config
 from cqhttp import CQHttp
 from util import print_log

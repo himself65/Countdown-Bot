@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+# -*- coding: UTF-8 -*-
 # coolq HTTP API的监听地址
 API_URL = "http://127.0.0.1:5001/"
 # 访问密钥
