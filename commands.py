@@ -159,3 +159,10 @@ def exec_python_code(bot: CQHttp, context=None, args=None):
     for item in pattern.findall(code):
         code = code.replace("&#{};".format(item),bytes([int(item)]).decode("utf-8"))
     run_python_in_docker(callback, code)
+
+@command(name="integral",help="在[a,b]上对f(x)进行数值定积分 integral a b f(x)")
+def integral(bot: CQHttp, context=None, args=None):
+    pass
+@command(name="indf_integral",help="对f(x)进行不定积分")
+def indf_integral(bot: CQHttp, context=None, args=None):
+    pass

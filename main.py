@@ -33,14 +33,23 @@ def message_listener():
         message_listeners.append(func)
     return inner
 
+
 def execute_broadcast():
     text = get_countdown_list(config.LIST_URL)
     for group in text:
         broadcast_at_group(int(group), text)
 
+
 def execute_hitokoto_broadcast():
     message = get_hitokoto()
-    for group_id in config.HITOKOTO_GROUPS:
+    broadcast_list = config.HITOKOTO_BROADCAST_LIST
+    if type(broadcast_list) is str:
+        import json
+        import util
+        broadcast_list = json.JSONDecoder().decode(
+            util.get_text_from_url(broadcast_list))
+
+    for group_id in broadcast_list:
         bot.send_msg(message_type="group", group_id=int(
             group_id), message=message)
 

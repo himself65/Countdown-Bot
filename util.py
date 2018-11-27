@@ -15,6 +15,14 @@ def get_countdown_list(url):
         result = decoder.decode(f.read().decode("utf-8"))
     return result
 
+
+def get_text_from_url(url: str)->str:
+    result = None
+    with urllib.request.urlopen(url) as f:
+        result = f.read().decode("utf-8")
+    return result
+
+
 def get_hitokoto():
     import urllib3
     import json
@@ -24,10 +32,9 @@ def get_hitokoto():
     data = json.JSONDecoder().decode(response.data.decode())
     response.close()
     to_send =\
-    """{text}
+        """{text}
             
 --- {source}
     
 (Hitokoto ID:{id})""".format(text=data["hitokoto"], source=data["from"], id=data["id"])
     return to_send
-

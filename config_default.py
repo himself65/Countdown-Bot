@@ -16,11 +16,10 @@ BROADCAST_MINUTE = 0
 # 一言广播(小时)
 HITOKOTO_HOUR = 8
 # 分钟
-HITOKOTO_MINUTE = 0
+HITOKOTO_MINUTE = -
 # 启用HITOKOTO的群
-HITOKOTO_GROUPS = [
-    "718459861"
-]
+# list 或者URL的文本
+HITOKOTO_BROADCAST_LIST = "https://raw.githubusercontent.com/ZhehaoMi/countdown/master/hitokoto.json"
 # 检查间隔
 CHECK_INTERVAL = 5
 # 执行延时
@@ -36,6 +35,9 @@ COMMAND_PREFIX = ["--", "!!"]
 OUTPUT_LENGTH_LIMIT = 200
 # 执行Python代码的时间限制(ms)
 EXECUTE_TIME_LIMIT = 2000
+# 负责执行的Docker镜像名
+DOCKER_IMAGE = ""
+
 SAMPLE = {
     "718459861": [
         {
