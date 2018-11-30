@@ -17,13 +17,10 @@ def show_status(bot: CQHttp, context, args):
     to_send =\
         """倒计时广播时间: {broadcast_hour:0>2d}:{broadcast_minute:0>2d}
 Hitokoto广播时间: {hitokoto_hour:0>2d}:{hitokoto_minute:0>2d}
-进行Hitokoto广播的群: {hitokoto_groups}
 指令前缀: {command_prefix}
 输入 [指令前缀]help 查看帮助""".format(
             broadcast_hour=config.BROADCAST_HOUR, broadcast_minute=config.BROADCAST_MINUTE,
             hitokoto_hour=config.HITOKOTO_HOUR, hitokoto_minute=config.HITOKOTO_MINUTE,
-            hitokoto_groups="".join(
-                map(lambda x: x+" ", util.get_hitokoto_groups(main.config.HITOKOTO_BROADCAST_LIST))),
             command_prefix="".join(
                 map(lambda x: x+" ", config.COMMAND_PREFIX)),
         )
@@ -169,11 +166,6 @@ def exec_python_code(bot: CQHttp, context=None, args=None):
     run_python_in_docker(callback, code)
 
 
-@command(name="integral", help="在[a,b]上对f(x)进行数值定积分 integral a b f(x)")
+@command(name="integral", help="对f(x)进行不定积分")
 def integral(bot: CQHttp, context=None, args=None):
-    pass
-
-
-@command(name="indf_integral", help="对f(x)进行不定积分")
-def indf_integral(bot: CQHttp, context=None, args=None):
     pass
