@@ -168,4 +168,26 @@ def exec_python_code(bot: CQHttp, context=None, args=None):
 
 @command(name="integral", help="对f(x)进行不定积分")
 def integral(bot: CQHttp, context=None, args=None):
-    pass
+    import sympy
+    import threading
+    import time
+
+    def process():
+        func = "".join(map(lambda x: x+" ", args[1:]))
+        x = sympy.symbols("x")
+
+        def integrate():
+            res = sympy.integrate(func, x)
+            bot.send(context, "Python表达式:\n{}\n\nLatex:\n{}".format(
+                res, sympy.latex(res)))
+        thd2 = threading.Thread(target=integrate)
+        thd2.start()
+        begin = time.time()
+        while time.time()-begin < 2:
+            time.sleep(0.1)
+        if thd2.is_alive():
+            bot.send(context, "积分{}运行超时.".format(func))
+            util.stop_thread(thd2)
+            
+    thread = threading.Thread(target=process)
+    thread.start()
