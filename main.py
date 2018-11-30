@@ -43,12 +43,12 @@ def execute_broadcast():
 def execute_hitokoto_broadcast():
     message = get_hitokoto()
     import util
-    for group_id in util.get_hitokoto_groups():
+    for group_id in util.get_hitokoto_groups(config.HITOKOTO_BROADCAST_LIST):
         bot.send_msg(message_type="group", group_id=int(
             group_id), message=message)
 
 
-def main():
+def init():
     print_log("Starting countdown-bot.")
     print_log("By MikuNotFoundException.")
     print_log("QQ:814980678")
@@ -160,4 +160,4 @@ def input_loop():
 from commands import *
 from events import *
 if __name__ == "__main__":
-    main()
+    init()

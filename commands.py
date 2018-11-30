@@ -3,7 +3,8 @@
 
 from main import command
 from cqhttp import CQHttp
-from main import config, commands, broadcast_at_group, print_log
+from main import config, commands, broadcast_at_group
+from util import print_log
 import main
 
 
