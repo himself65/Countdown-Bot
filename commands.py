@@ -1,8 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: UTF-8 -*-
 
-from main import *
-import re,util
+from main import command
+from cqhttp import CQHttp
+from main import config, commands, broadcast_at_group, print_log
+import main
+
+
+import re
+import util
+
 
 @command(name="status", help="查看状态")
 def show_status(bot: CQHttp, context, args):
@@ -64,7 +71,7 @@ def zero(bot: CQHttp, context=None, args=None):
 
 
 @command(name="凉了", help="凉了?")
-def zero(bot: CQHttp, context=None, args=None):
+def im_cold(bot: CQHttp, context=None, args=None):
     bot.send(context, "qwq您不会凉的~")
 
 
@@ -156,12 +163,16 @@ def exec_python_code(bot: CQHttp, context=None, args=None):
     code = "".join(map(lambda x: x+" ", args[1:]))
     pattern = re.compile(r'&#(.*?);')
     for item in pattern.findall(code):
-        code = code.replace("&#{};".format(item),bytes([int(item)]).decode("utf-8"))
+        code = code.replace("&#{};".format(
+            item), bytes([int(item)]).decode("utf-8"))
     run_python_in_docker(callback, code)
 
-@command(name="integral",help="在[a,b]上对f(x)进行数值定积分 integral a b f(x)")
+
+@command(name="integral", help="在[a,b]上对f(x)进行数值定积分 integral a b f(x)")
 def integral(bot: CQHttp, context=None, args=None):
     pass
-@command(name="indf_integral",help="对f(x)进行不定积分")
+
+
+@command(name="indf_integral", help="对f(x)进行不定积分")
 def indf_integral(bot: CQHttp, context=None, args=None):
     pass
