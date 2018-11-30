@@ -2,8 +2,7 @@
 # -*- coding: UTF-8 -*-
 
 from main import *
-import re
-
+import re,util
 
 @command(name="status", help="查看状态")
 def show_status(bot: CQHttp, context, args):
@@ -16,7 +15,7 @@ Hitokoto广播时间: {hitokoto_hour:0>2d}:{hitokoto_minute:0>2d}
             broadcast_hour=config.BROADCAST_HOUR, broadcast_minute=config.BROADCAST_MINUTE,
             hitokoto_hour=config.HITOKOTO_HOUR, hitokoto_minute=config.HITOKOTO_MINUTE,
             hitokoto_groups="".join(
-                map(lambda x: x+" ", config.HITOKOTO_GROUPS)),
+                map(lambda x: x+" ", util.get_hitokoto_groups())),
             command_prefix="".join(
                 map(lambda x: x+" ", config.COMMAND_PREFIX)),
         )

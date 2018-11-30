@@ -42,14 +42,8 @@ def execute_broadcast():
 
 def execute_hitokoto_broadcast():
     message = get_hitokoto()
-    broadcast_list = config.HITOKOTO_BROADCAST_LIST
-    if type(broadcast_list) is str:
-        import json
-        import util
-        broadcast_list = json.JSONDecoder().decode(
-            util.get_text_from_url(broadcast_list))
-
-    for group_id in broadcast_list:
+    import util
+    for group_id in util.get_hitokoto_groups():
         bot.send_msg(message_type="group", group_id=int(
             group_id), message=message)
 

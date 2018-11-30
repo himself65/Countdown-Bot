@@ -1,7 +1,7 @@
 import datetime
 import urllib
 import json
-
+from main import config
 
 def print_log(text, log_type=0):
     print("[%s][%s]: %s" % (datetime.datetime.now(), [
@@ -38,3 +38,12 @@ def get_hitokoto():
     
 (Hitokoto ID:{id})""".format(text=data["hitokoto"], source=data["from"], id=data["id"])
     return to_send
+
+def get_hitokoto_groups():
+    broadcast_list = config.HITOKOTO_BROADCAST_LIST
+    if type(broadcast_list) is str:
+        import json
+        import util
+        broadcast_list = json.JSONDecoder().decode(
+            util.get_text_from_url(broadcast_list))
+    return broadcast_list
