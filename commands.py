@@ -186,7 +186,7 @@ def integrate(bot: CQHttp, context=None, args=None):
         thd2 = threading.Thread(target=integrate)
         thd2.start()
         begin = time.time()
-        while time.time()-begin < 2:
+        while time.time()-begin < 5:
             time.sleep(0.1)
         if thd2.is_alive():
             bot.send(context, "积分{}运行超时.".format(func))
