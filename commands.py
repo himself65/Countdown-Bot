@@ -166,8 +166,8 @@ def exec_python_code(bot: CQHttp, context=None, args=None):
     run_python_in_docker(callback, code)
 
 
-@command(name="integral", help="对f(x)进行不定积分")
-def integral(bot: CQHttp, context=None, args=None):
+@command(name="integrate", help="对f(x)进行不定积分")
+def integrate(bot: CQHttp, context=None, args=None):
     import sympy
     import threading
     import time
