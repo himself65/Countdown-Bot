@@ -1,5 +1,4 @@
 urllib
 cqhttp
 docker
-numpy
 sympy

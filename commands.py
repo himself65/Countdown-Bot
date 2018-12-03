@@ -1,15 +1,17 @@
 #!/usr/bin/env python3
 # -*- coding: UTF-8 -*-
 
-from main import command
 from cqhttp import CQHttp
-from main import config, commands, broadcast_at_group
 from util import print_log
-import main
-
-
+from register import command
+from global_vars import registered_commands as commands
+from global_vars import config
 import re
 import util
+@command(name="help", help="查看帮助")
+def help(bot: CQHttp, context=None, args=None):
+    bot.send(context, "".join(
+        map(lambda x: x[0]+" --- "+x[1][0]+"\n", commands.items())))
 
 
 @command(name="status", help="查看状态")
@@ -30,6 +32,7 @@ Hitokoto广播时间: {hitokoto_hour:0>2d}:{hitokoto_minute:0>2d}
 @command(name="broadcast", help="进行广播")
 def broadcast_cmd(bot, context, args=None):
     # print_log("broadcasting..")
+    from main import broadcast_at_group
     group_id = context.get("group_id", -1)
     if group_id != -1:
         broadcast_at_group(group_id)
@@ -45,11 +48,6 @@ def reload_config(bot, context, args=None):
         print("%s = %s" % (item, getattr(config, item)))
 
 
-@command(name="help", help="查看帮助")
-def help(bot: CQHttp, context=None, args=None):
-
-    bot.send(context, "".join(
-        map(lambda x: x[0]+" --- "+x[1][0]+"\n", commands.items())))
 
 
 @command(name="about", help="关于")
@@ -93,7 +91,7 @@ def oier_query(bot: CQHttp, context=None, args=None):
         shuffle(items)
         for item in items:
             print_log("item:{}".format(item))
-            text += "姓名:%s\n性别:%s\n" % (item["name"],
+            text += "姓名:%s\n生理性别:%s\n" % (item["name"],
                                         {-1: "女", 1: "男"}.get(int(item["sex"]), "未知"))
             # text+="获得奖项:\n"
             awards = list(enumerate(eval(item["awards"])))
@@ -179,9 +177,12 @@ def integrate(bot: CQHttp, context=None, args=None):
 
         def integrate():
             print_log("Starting...")
-            res = sympy.integrate(func, x)
-            bot.send(context, "Python表达式:\n{}\n\nLatex:\n{}".format(
-                res, sympy.latex(res)))
+            try:
+                res = sympy.integrate(func, x)
+                bot.send(context, "Python表达式:\n{}\n\nLatex:\n{}".format(
+                    res, sympy.latex(res)))
+            except Exception as ex:
+                bot.send(context,ex)
             print_log("Done...")
         thd2 = threading.Thread(target=integrate)
         thd2.start()

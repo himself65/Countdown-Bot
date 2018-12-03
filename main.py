@@ -1,37 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: UTF-8 -*-
 
+
 from cqhttp import CQHttp
-
-try:
-    import config
-except ModuleNotFoundError as ex:
-    import config_default as config
 from util import print_log, get_countdown_list, get_hitokoto
-
+from global_vars import message_listeners, registered_commands, config
 import threading
 import time
+import pdb
 bot = CQHttp(api_root=config.API_URL, access_token=config.ACCESS_TOKEN)
 log = bot.logger
-commands = {
-
-}
-
-message_listeners = [
-
-]
-
-
-def command(name, help=""):
-    def inner(func):
-        commands[name] = (help, func)
-    return inner
-
-
-def message_listener():
-    def inner(func):
-        message_listeners.append(func)
-    return inner
 
 
 def execute_broadcast():
@@ -63,6 +41,12 @@ def init():
     hitokoto_thread.start()
     # 启动CQ Bot
     print_log("Starting CQHttp...")
+    import commands
+    import events
+    print_log("Registered commands:\n{}".format("".join(
+        map(lambda x: "{} :{}\n".format(x[0], x[1]), registered_commands.items()))))
+    print_log("Registered message listeners:\n{}".format(message_listeners))
+
     bot.run(host=config.POST_ADDRESS, port=config.POST_PORT)
 
 
@@ -107,7 +91,7 @@ def get_broadcast_content(broadcast_list: list):
 
 @bot.on_message()
 def handle_message(context):
-    print_log("handling message:{}".format(context))
+    print_log("Handling message:{}".format(context))
     if "group_id" in context:
         text: str = None
         import cqhttp
@@ -123,13 +107,14 @@ def handle_message(context):
         prefix = check_prefix(text)
         if text is not None and prefix is not None:
             command = (text[len(prefix):]+" ").split(" ")
-            print_log("execute command: {}".format(command))
-            if command[0] in commands:
-                commands[command[0]][1].__call__(
+            print_log("Execute command: {}".format(command))
+            if command[0] in registered_commands:
+                registered_commands[command[0]][1].__call__(
                     bot, context, command)
             else:
                 bot.send(context, "未知指令: %s" % command[0])
         if text is not None:
+            print_log("Calling message listeners.")
             for listener in message_listeners:
                 listener.__call__(bot, context, text)
 
@@ -157,7 +142,6 @@ def input_loop():
     pass
 
 
-from commands import *
-from events import *
 if __name__ == "__main__":
+    # pdb.set_trace()
     init()
