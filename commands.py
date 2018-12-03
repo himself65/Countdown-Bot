@@ -182,7 +182,7 @@ def integrate(bot: CQHttp, context=None, args=None):
                 bot.send(context, "Python表达式:\n{}\n\nLatex:\n{}".format(
                     res, sympy.latex(res)))
             except Exception as ex:
-                bot.send(context,ex)
+                bot.send(context,str(ex))
             print_log("Done...")
         thd2 = threading.Thread(target=integrate)
         thd2.start()
