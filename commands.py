@@ -8,6 +8,8 @@ from global_vars import registered_commands as commands
 from global_vars import config
 import re
 import util
+
+
 @command(name="help", help="查看帮助")
 def help(bot: CQHttp, context=None, args=None):
     bot.send(context, "".join(
@@ -46,8 +48,6 @@ def reload_config(bot, context, args=None):
         if item.startswith("__"):
             continue
         print("%s = %s" % (item, getattr(config, item)))
-
-
 
 
 @command(name="about", help="关于")
@@ -92,7 +92,7 @@ def oier_query(bot: CQHttp, context=None, args=None):
         for item in items:
             print_log("item:{}".format(item))
             text += "姓名:%s\n生理性别:%s\n" % (item["name"],
-                                        {-1: "女", 1: "男"}.get(int(item["sex"]), "未知"))
+                                          {-1: "女", 1: "男"}.get(int(item["sex"]), "未知"))
             # text+="获得奖项:\n"
             awards = list(enumerate(eval(item["awards"])))
             for index, award in awards:
@@ -182,7 +182,7 @@ def integrate(bot: CQHttp, context=None, args=None):
                 bot.send(context, "Python表达式:\n{}\n\nLatex:\n{}".format(
                     res, sympy.latex(res)))
             except Exception as ex:
-                bot.send(context,str(ex))
+                bot.send(context, str(ex)[:100])
             print_log("Done...")
         thd2 = threading.Thread(target=integrate)
         thd2.start()
