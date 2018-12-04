@@ -1,7 +1,11 @@
 import datetime
 import urllib
 import json
-import ctypes,inspect
+import ctypes
+import inspect
+from io import BytesIO
+
+
 def print_log(text, log_type=0):
     print("[%s][%s]: %s" % (datetime.datetime.now(), [
           "MESSAGE", "WARNING", "ERROR"][log_type], str(text)))
@@ -38,6 +42,7 @@ def get_hitokoto():
 (Hitokoto ID:{id})""".format(text=data["hitokoto"], source=data["from"], id=data["id"])
     return to_send
 
+
 def get_hitokoto_groups(url):
     broadcast_list = url
     if type(broadcast_list) is str:
@@ -46,8 +51,6 @@ def get_hitokoto_groups(url):
         broadcast_list = json.JSONDecoder().decode(
             util.get_text_from_url(broadcast_list))
     return broadcast_list
-
-
 
 
 def _async_raise(tid, exctype):
@@ -69,3 +72,13 @@ def _async_raise(tid, exctype):
 def stop_thread(thread):
     """强行终止一个线程"""
     _async_raise(thread.ident, SystemExit)
+
+# 渲染Latex
+
+
+def renderLatex(formula: str)->BytesIO:
+    from sympy import preview
+    print_log("Rendering {}".format(formula))
+    buffer = BytesIO()
+    preview(formula, viewer="BytesIO", euler=False, outputbuffer=buffer)
+    return buffer

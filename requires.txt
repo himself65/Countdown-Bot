@@ -2,3 +2,4 @@ urllib
 cqhttp
 docker
 sympy
+pyglet
