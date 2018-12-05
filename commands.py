@@ -214,3 +214,9 @@ def renderlatex(bot: CQHttp, context=None, args=None)->None:
         ))
     except Exception as ex:
         bot.send(context, "渲染Latex时发生错误:\n{}".format(ex))
+
+@command(name="签到", help="群签到")
+def attendance(bot: CQHttp, context=None, args=None):
+    import sign_up
+    bot.send(context,get_reply(context))
+    

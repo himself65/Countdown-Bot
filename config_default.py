@@ -38,6 +38,9 @@ OUTPUT_LENGTH_LIMIT = 200
 EXECUTE_TIME_LIMIT = 2000
 # 负责执行的Docker镜像名
 DOCKER_IMAGE = ""
+# 签到数据文件路径
+ATTENDANCE_DATA = "./bot-data/"
+
 
 SAMPLE = {
     "718459861": [
