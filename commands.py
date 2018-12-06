@@ -218,5 +218,5 @@ def renderlatex(bot: CQHttp, context=None, args=None)->None:
 @command(name="签到", help="群签到")
 def attendance(bot: CQHttp, context=None, args=None):
     import sign_up
-    bot.send(context,get_reply(context))
+    bot.send(context,sign_up.get_reply(context))
     
