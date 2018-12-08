@@ -5,11 +5,38 @@
 from cqhttp import CQHttp
 from util import print_log, get_countdown_list, get_hitokoto
 from global_vars import message_listeners, registered_commands, config
+from flask import request, make_response
+from json import JSONEncoder
 import threading
 import time
 import pdb
+import flask
 bot = CQHttp(api_root=config.API_URL, access_token=config.ACCESS_TOKEN)
 log = bot.logger
+web_app = bot._server_app
+
+
+@web_app.route("/api/credit/get_by_group/<int:group_id>", methods=["POST", "GET"])
+def get_credit_by_group(group_id: int):
+    import sign_up
+    import os
+    if not os.path.exists(os.path.join(config.ATTENDANCE_DATA, "group-{}.json".format(group_id))):
+        return JSONEncoder().encode({
+            "message": "Group not found.",
+            "status": -1
+        })
+    return JSONEncoder().encode(sign_up.load_data(group_id))
+
+
+@web_app.route("/api/credit/get_groups", methods=["POST", "GET"])
+def get_groups():
+    import os
+    import re
+    result = []
+    pattern = re.compile(r"group-([0-9]+)\.json")
+    for group in os.listdir(config.ATTENDANCE_DATA):
+        result.append(pattern.findall(group)[0])
+    return JSONEncoder().encode(result)
 
 
 def execute_broadcast():
