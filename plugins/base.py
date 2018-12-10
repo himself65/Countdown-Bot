@@ -87,11 +87,6 @@ def im_cold(bot: CQHttp, context=None, args=None):
     bot.send(context, "qwq您不会凉的~")
 
 
-@command(name="签到", help="群签到")
-def attendance(bot: CQHttp, context=None, args=None):
-    import sign_in
-    bot.send(context, sign_in.get_reply(context))
-
 
 def get_countdown_list(url):
     import json

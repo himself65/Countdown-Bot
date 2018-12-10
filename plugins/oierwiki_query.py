@@ -9,7 +9,7 @@ import util
 
 def plugin():
     return {
-        "author": "officeyutong",
+        "author": "0xis",
         "version": 1.0,
         "description": "OI Wiki查询支持."
     }

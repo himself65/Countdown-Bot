@@ -40,17 +40,3 @@ EXECUTE_TIME_LIMIT = 2000
 DOCKER_IMAGE = ""
 # 签到数据文件路径
 ATTENDANCE_DATA = "./bot-data/"
-
-
-SAMPLE = {
-    "718459861": [
-        {
-            "name": "Test",
-            "date": "2018-11-22"
-        },
-        {
-            "name": "The man who changed China",
-            "date": "1926-8-17"
-        }
-    ]
-}
