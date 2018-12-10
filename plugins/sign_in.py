@@ -1,5 +1,19 @@
 #!/usr/bin/env python3
 # -*- coding: UTF-8 -*-
+from register import command
+
+
+def plugin():
+    return {
+        "author": "ACCEPT",
+        "version": 1.0,
+        "description": "签到支持"
+    }
+
+
+@command(name="签到", help="签到")
+def sign_in(bot, context, args):
+    bot.send(context, get_reply(context))
 
 
 def load_data(group_id):
@@ -16,6 +30,13 @@ def load_data(group_id):
     if os.path.exists(file_path):
         with open(file_path, "r") as f:
             data = json.load(f)
+    else:
+        with open(file_path, "w") as file:
+            file.write(json.JSONEncoder().encode({}))
+            data = {
+
+            }
+
     return data
 
 

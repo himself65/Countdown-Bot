@@ -1,5 +1,6 @@
-from global_vars import registered_commands, message_listeners
+from global_vars import registered_commands, message_listeners, loop_threads
 import pdb
+
 
 def command(name, help=""):
     def inner(func):
@@ -12,4 +13,35 @@ def message_listener(func):
 
     def inner():
         return func()
+    return inner
+
+
+def schedule_loop(hour, minute, check_interval, execute_delay, name):
+    from util import print_log
+    import time
+    import threading
+    print_log("Registering schedule loop:%s at %2d:%2d every day." %
+              (name, hour, minute))
+
+    def schedule(hour: int, minute: int, check_interval: int, execute_delay: int, todo, name="Schedule Task"):
+        while True:
+            while True:
+                from datetime import datetime
+                curr = datetime.now()
+                if curr.hour == hour and curr.minute == minute:
+                    break
+                print_log("Checking '"+name+"'")
+                time.sleep(check_interval)
+            print_log("Executing '"+name+"'")
+            todo()
+            time.sleep(execute_delay)
+
+    def inner(func):
+        loop_threads.append(threading.Thread(
+            target=schedule,
+            args=(
+                hour, minute, check_interval, execute_delay, func, name
+            ),
+            name="ScheduleLoop-%s" % name
+        ))
     return inner
