@@ -12,7 +12,7 @@ import pdb
 import flask
 import os
 import importlib
-import PyV8 
+# import PyV8 
 bot = CQHttp(api_root=config.API_URL, access_token=config.ACCESS_TOKEN)
 log = bot.logger
 web_app = bot._server_app
