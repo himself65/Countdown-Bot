@@ -11,6 +11,8 @@ import random
 import tempfile
 import shutil
 import base64
+import urllib
+from io import BytesIO
 try:
     import plugins.config.cats_config as config
 except ImportError as ex:
@@ -49,18 +51,18 @@ def suck_cats(bot: CQHttp, context, args):
     if selected_user not in data:
         bot.send(context, "指定用户未上传过猫片")
         return
-    selected_index = random.randint(1, data[selected_user]["count"])
+    selected_file = random.choice(data[selected_user]["image_list"])
 
     def send():
-        file_name = "{}/{}.jpg".format(selected_user, selected_index)
+        file_name = "{}/{}".format(selected_user, selected_file)
         try:
             stream = bucket.get_object(
                 file_name)
             encode = base64.encodebytes(
                 stream.read()).decode().replace("\n", "")
             # print_log(encode)
-            bot.send(context, "[CQ:image,file=base64://{}]\n来自{}的猫片{}.jpg".format(
-                encode, selected_user, selected_index))
+            bot.send(context, "[CQ:image,file=base64://{}]\n来自{}的猫片{}".format(
+                encode, selected_user, selected_file))
         except Exception as ex:
             pass
     threading.Thread(target=send).start()
@@ -72,14 +74,15 @@ def upload_cats(bot: CQHttp, context, args):
         bot.send(context, "请上传图片!")
         return
     uploader_id = str(context["sender"]["user_id"])
+    data = load_data()
 
     def allocate_file_name():
-        data = load_data()
+
         if uploader_id not in data:
-            data[uploader_id] = {"count": 0}
-        data[uploader_id]["count"] += 1
-        save_data(data)
-        return "{}/{}.jpg".format(uploader_id, data[uploader_id]["count"])
+            data[uploader_id] = {"image_list": []}
+        file_name = "%d.jpg" % len(data[uploader_id]["image_list"])
+        # data[uploader_id]["image_list"].append(file_name)
+        return file_name
     pattern = re.compile(r"\[CQ:image.+url\=(?P<url>[^\[^\]]+)\]")
     result = pattern.search(args[1])
     if result is None:
@@ -92,8 +95,24 @@ def upload_cats(bot: CQHttp, context, args):
         name = allocate_file_name()
         print_log("Uploading %s" % name)
         bot.send(context, "{} 的猫猫图片 {} 开始上传.".format(uploader_id, name))
-        bucket.put_object(name, requests.get(url))
+        buf = BytesIO()
+        print_log("Downloading %s" % url)
+        with urllib.request.urlopen(url) as src:
+            while True:
+                buffer = src.read(1024)
+                if not buffer:
+                    break
+                if buf.tell() > config.IMAGE_SIZE_LIMIT:
+                    bot.send(context, "{} 上传的图片 {} 过大".format(
+                        uploader_id, name))
+                    return
+                buf.write(buffer)
+        buf.flush()
+        bucket.put_object("{}/{}".format(uploader_id, name), buf.getvalue())
+        # bucket.put_object(name, )
         bot.send(context, "{} 的猫猫图片 {} 上传完成.".format(uploader_id, name))
+        data[uploader_id]["image_list"].append(name)
+        save_data(data)
     threading.Thread(target=upload_image).start()
 
 
