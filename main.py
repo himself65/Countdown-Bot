@@ -106,7 +106,7 @@ def stop(args):
 
 @console_command(name="help", help="查看帮助")
 def console_help(args):
-    for k, v in console_commands:
+    for k, v in console_commands.items():
         print_log("%s %s" % (k, v[0]))
 
 
