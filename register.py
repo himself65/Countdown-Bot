@@ -1,10 +1,16 @@
-from global_vars import registered_commands, message_listeners, loop_threads
+from global_vars import registered_commands, message_listeners, loop_threads, console_commands
 import pdb
 
 
 def command(name, help=""):
     def inner(func):
         registered_commands[name] = (help, func)
+    return inner
+
+
+def console_command(name, help=""):
+    def inner(func):
+        console_commands[name] = (help, func)
     return inner
 
 

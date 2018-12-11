@@ -3,7 +3,8 @@
 
 from cqhttp import CQHttp
 from util import print_log
-from global_vars import message_listeners, registered_commands, config, loop_threads, loaded_plugins, loop_threads
+from global_vars import message_listeners, registered_commands, config, loop_threads, loaded_plugins, loop_threads, console_commands
+from register import console_command
 from flask import request, make_response
 from json import JSONEncoder
 import threading
@@ -12,7 +13,8 @@ import pdb
 import flask
 import os
 import importlib
-# import PyV8 
+import global_vars
+# import PyV8
 bot = CQHttp(api_root=config.API_URL, access_token=config.ACCESS_TOKEN)
 log = bot.logger
 web_app = bot._server_app
@@ -41,21 +43,24 @@ def get_groups():
     return JSONEncoder().encode(result)
 
 
-def init():
+def start():
     print_log("Starting countdown-bot.")
     print_log("By MikuNotFoundException.")
     print_log("QQ:814980678")
+
     def load_python_plugin(plugin):
         this = importlib.import_module("plugins."+plugin[:plugin.index(".py")])
         if "plugin" in dir(this):
-            loaded_plugins.append(dict(**this.plugin(), **{
+            plugin_name = this.__name__[this.__name__.index(".")+1:]
+            loaded_plugins[plugin_name] = (dict(**this.plugin(), **{
                 "load": getattr(this, "load", None),
                 "disable": getattr(this, "disable", None),
-                "name": this.__name__
+                "name": plugin_name
             }))
             if hasattr(this, "load"):
                 this.load()
-            print_log("Loaded plugin: {}".format(loaded_plugins[-1]))
+            print_log("Loaded plugin: {}".format(loaded_plugins[plugin_name]))
+
     def load_javascript_plugin(name):
         pass
     # 加载插件
@@ -78,8 +83,31 @@ def init():
     # 启动CQ Bot
     print_log("Starting CQHttp...")
     import global_vars
+
+    app_thread = threading.Thread(target=lambda: bot.run(
+        host=config.POST_ADDRESS, port=config.POST_PORT))
+    app_thread.start()
     global_vars.VARS["bot"] = bot
-    bot.run(host=config.POST_ADDRESS, port=config.POST_PORT)
+    global_vars.VARS["app_thread"] = app_thread
+    input_loop()
+
+
+@console_command(name="stop", help="关闭Bot")
+def stop(args):
+    import util
+    import global_vars
+    print_log("Shutting down schedule loops..")
+    for x in global_vars.loop_threads:
+        util.stop_thread(x)
+    print_log("Shutting flask..")
+    util.stop_thread(global_vars.VARS["app_thread"])
+    exit(0)
+
+
+@console_command(name="help", help="查看帮助")
+def console_help(args):
+    for k, v in console_commands:
+        print_log("%s %s" % (k, v[0]))
 
 
 @bot.on_message()
@@ -118,9 +146,14 @@ def handle_group_invite(context):
 
 
 def input_loop():
-    pass
+    while True:
+        args = (input(">")+" ").split(" ")
+        if args[0] in console_commands:
+            console_commands[args[0]][1](args)
+        else:
+            print("Unknown command: {}".format(args))
 
 
 if __name__ == "__main__":
     # pdb.set_trace()
-    init()
+    start()
