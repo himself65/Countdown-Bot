@@ -2,6 +2,7 @@ bot-data/
 group-*.json
 *_config.py
 plugins/data/*
+cats.json
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

@@ -80,7 +80,11 @@ def upload_cats(bot: CQHttp, context, args):
 
         if uploader_id not in data:
             data[uploader_id] = {"image_list": []}
-        file_name = "%d.jpg" % len(data[uploader_id]["image_list"])
+        # file_name = "%d.jpg" %
+        next_name = len(data[uploader_id]["image_list"])
+        while "%d.jpg" % next_name in data[uploader_id]["image_list"]:
+            next_name += 1
+        file_name = "%d.jps" % next_name
         # data[uploader_id]["image_list"].append(file_name)
         return file_name
     pattern = re.compile(r"\[CQ:image.+url\=(?P<url>[^\[^\]]+)\]")
