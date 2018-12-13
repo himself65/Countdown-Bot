@@ -1,6 +1,6 @@
 from cqhttp import CQHttp
 from util import print_log
-from register import command, schedule_loop
+from register import command, schedule_loop,console_command
 from global_vars import registered_commands as commands
 from global_vars import config
 import re
@@ -53,7 +53,7 @@ def plugins(bot: CQHttp, context, args):
         map(lambda obj: make_msg(obj), global_vars.loaded_plugins.items())))
 
 
-@command(name="reload", help="重新加载配置文件")
+@console_command(name="reload", help="重新加载配置文件")
 def reload_config(bot, context, args=None):
     import importlib
     importlib.reload(config)

@@ -1,4 +1,4 @@
-from register import command
+from register import command, console_command
 from cqhttp import CQHttp
 from util import print_log
 import global_vars
@@ -31,6 +31,21 @@ def load():
     auth = oss2.Auth(config.ACCESS_KEY_ID, config.ACCESS_KEY_SECRET)
     bucket = oss2.Bucket(auth, config.ENDPOINT, config.BUCKET_NAME)
     global_vars.VARS["bucket"] = bucket
+
+
+@console_command(name="sync-cats", help="同步猫猫图库")
+def sync_cats(args):
+    data = {}
+    bucket = global_vars.VARS["bucket"]
+    for file in oss2.ObjectIterator(bucket):
+        if "/" not in file.key and not file.key.endswith(".jpg"):
+            continue
+        user, file_name, *_ = file.key.split("/")
+        if user not in data:
+            data[user] = {"image_list": []}
+        data[user]["image_list"].append(file_name)
+    print_log("Result: {}".format(data))
+    save_data(data)
 
 
 @command(name="吸猫", help="吸猫")

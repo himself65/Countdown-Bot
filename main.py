@@ -155,7 +155,11 @@ def input_loop():
     while True:
         args = (input(">")+" ").split(" ")
         if args[0] in console_commands:
-            console_commands[args[0]][1](args)
+            try:
+                console_commands[args[0]][1](args)
+            except Exception as ex:
+                print_log(ex)
+                raise ex
         else:
             print("Unknown command: {}".format(args))
 
