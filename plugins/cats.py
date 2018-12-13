@@ -60,9 +60,9 @@ def suck_cats(bot: CQHttp, context, args):
     while args[-1] == "":
         del args[-1]
     if len(args) > 1:
-        selected_user = random.choice(list(data.keys()))
-    else:
         selected_user = args[1]
+    else:
+        selected_user = random.choice(list(data.keys()))
     print_log("user:{}".format(selected_user))
     if selected_user not in data:
         bot.send(context, "指定用户未上传过猫片")
@@ -83,8 +83,7 @@ def suck_cats(bot: CQHttp, context, args):
             bot.send(context, "[CQ:image,file=base64://{}]\n来自{}的猫片{}".format(
                 encode, selected_user, selected_file))
         except Exception as ex:
-            pass
-            bot.send(context.str(ex))
+            bot.send(context,str(ex))
     threading.Thread(target=send).start()
 
 
