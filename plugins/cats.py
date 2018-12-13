@@ -56,9 +56,10 @@ def suck_cats(bot: CQHttp, context, args):
         bot.send(context, "目前无人上传过猫猫图片.")
         return
     selected_user = None
+    selected_file = None
     while args[-1] == "":
         del args[-1]
-    if len(args) < 2:
+    if len(args) > 1:
         selected_user = random.choice(list(data.keys()))
     else:
         selected_user = args[1]
@@ -66,7 +67,10 @@ def suck_cats(bot: CQHttp, context, args):
     if selected_user not in data:
         bot.send(context, "指定用户未上传过猫片")
         return
-    selected_file = random.choice(data[selected_user]["image_list"])
+    if len(args) > 2:
+        selected_file = str(args[2])
+    else:
+        selected_file = random.choice(data[selected_user]["image_list"])
 
     def send():
         file_name = "{}/{}".format(selected_user, selected_file)
@@ -80,6 +84,7 @@ def suck_cats(bot: CQHttp, context, args):
                 encode, selected_user, selected_file))
         except Exception as ex:
             pass
+            bot.send(context.str(ex))
     threading.Thread(target=send).start()
 
 
