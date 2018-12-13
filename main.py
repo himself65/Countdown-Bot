@@ -29,7 +29,13 @@ def get_credit_by_group(group_id: int):
             "message": "Group not found.",
             "status": -1
         })
-    return JSONEncoder().encode(sign_in.load_data(group_id))
+    data = sign_in.load_data(group_id)
+    result = []
+    for key in data:
+        data[key]["id"] = key
+        result.append(data[key])
+    result.sort(key=lambda x: x["rating"], reverse=True)
+    return JSONEncoder().encode(result)
 
 
 @web_app.route("/api/credit/get_groups", methods=["POST", "GET"])
