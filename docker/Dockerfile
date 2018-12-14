@@ -1,7 +1,6 @@
-FROM ubuntu:18.04
+FROM python
 
 LABEL maintainer="814980678@qq.com"
-RUN apt update -y && apt upgrade -y 
-# COPY sources.list /etc/apt/sources.list
-RUN apt update -y && apt install -y nodejs python3.6 g++ gcc ocaml ghc fpc openjdk-8-jdk openjdk-8-jre
-
+RUN pip3 install pip -U
+RUN pip3 config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
+RUN pip3 install numpy && pip3 install sympy
