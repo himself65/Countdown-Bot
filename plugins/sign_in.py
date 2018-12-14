@@ -10,7 +10,7 @@ from datetime import datetime, date
 from json import JSONDecoder, JSONEncoder
 web_app = global_vars.VARS["web_app"]
 DATA_PATH = "plugins/data/sign_in"
-
+config=global_vars.CONFIG[__name__]
 
 def plugin():
     return {
@@ -75,7 +75,8 @@ def get_user_data(data: dict, user_id):
 
 def get_reply(context):
     group_id = str(context['group_id'])
-
+    if group_id in config.BLACK_LIST_GROUPS:
+        return "签到功能在本群停用"
     data = load_data(group_id)
 
     sender = context['sender']
