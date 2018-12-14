@@ -36,8 +36,11 @@ def broadcast_at_group(group_id: int, content=None):
         content = get_countdown_list(config.LIST_URL)
     print_log("Broadcasting at group %d with content %s" % (group_id, content))
     for item in get_broadcast_content(content[str(group_id)]):
-        bot.send_group_msg(group_id=group_id, message=item)
-
+        try:
+            bot.send_group_msg(group_id=group_id, message=item)
+        except Exception as ex:
+            print_log(ex)
+            raise ex
 
 @schedule_loop(hour=config.BROADCAST_HOUR, minute=config.BROADCAST_MINUTE, check_interval=config.CHECK_INTERVAL, execute_delay=config.EXECUTE_DELAY, name="Broadcast")
 def execute_broadcast():

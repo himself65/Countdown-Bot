@@ -83,7 +83,7 @@ def suck_cats(bot: CQHttp, context, args):
             bot.send(context, "[CQ:image,file=base64://{}]\n来自{}的猫片{}".format(
                 encode, selected_user, selected_file))
         except Exception as ex:
-            bot.send(context,str(ex))
+            bot.send(context, str(ex))
     threading.Thread(target=send).start()
 
 
