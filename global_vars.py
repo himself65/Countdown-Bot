@@ -18,5 +18,9 @@ last_message = None
 repeat_time = 0
 VARS = {
     "bot": None,
-    "app_thread":None
+    "app_thread": None,
+    "web_app": None
+}
+CONFIG = {
+    
 }

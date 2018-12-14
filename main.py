@@ -17,47 +17,26 @@ import global_vars
 # import PyV8
 bot = CQHttp(api_root=config.API_URL, access_token=config.ACCESS_TOKEN)
 log = bot.logger
-web_app = bot._server_app
-
-
-@web_app.route("/api/credit/get_by_group/<int:group_id>", methods=["POST", "GET"])
-def get_credit_by_group(group_id: int):
-    from plugins import sign_in
-    import os
-    if not os.path.exists(os.path.join(config.ATTENDANCE_DATA, "group-{}.json".format(group_id))):
-        return JSONEncoder().encode({
-            "message": "Group not found.",
-            "status": -1
-        })
-    data = sign_in.load_data(group_id)
-    result = []
-    for key in data:
-        data[key]["id"] = key
-        result.append(data[key])
-    result.sort(key=lambda x: x["rating"], reverse=True)
-    return JSONEncoder().encode(result)
-
-
-@web_app.route("/api/credit/get_groups", methods=["POST", "GET"])
-def get_groups():
-    import os
-    import re
-    result = []
-    pattern = re.compile(r"group-([0-9]+)\.json")
-    for group in os.listdir(config.ATTENDANCE_DATA):
-        result.append(pattern.findall(group)[0])
-    return JSONEncoder().encode(result)
 
 
 def start():
     print_log("Starting countdown-bot.")
     print_log("By MikuNotFoundException.")
     print_log("QQ:814980678")
+    global_vars.VARS["bot"] = bot
+    global_vars.VARS["web_app"] = bot._server_app
+    global_vars.CONFIG[__name__] = config
 
     def load_python_plugin(plugin):
-        this = importlib.import_module("plugins."+plugin[:plugin.index(".py")])
+        plugin_name = plugin[:plugin.index(".py")]
+        if os.path.exists("./plugins/config/%s_config.py" % plugin_name):
+            global_vars.CONFIG["plugins."+plugin_name] = importlib.import_module(
+                "plugins.config."+plugin_name+"_config")
+        elif os.path.exists("./plugins/config/%s_config_default.py" % plugin_name):
+            global_vars.CONFIG["plugins."+plugin_name] = importlib.import_module(
+                "plugins.config."+plugin_name+"_config_default")
+        this = importlib.import_module("plugins."+plugin_name)
         if "plugin" in dir(this):
-            plugin_name = this.__name__[this.__name__.index(".")+1:]
             loaded_plugins[plugin_name] = (dict(**this.plugin(), **{
                 "load": getattr(this, "load", None),
                 "disable": getattr(this, "disable", None),
@@ -79,7 +58,6 @@ def start():
             load_python_plugin(plugin)
         elif plugin.endswith(".js"):
             load_javascript_plugin(plugin)
-
     print_log("Registered commands:\n{}".format("".join(
         map(lambda x: "{} :{}\n".format(x[0], x[1]), registered_commands.items()))))
     print_log("Registered message listeners:\n{}".format(message_listeners))
@@ -88,12 +66,9 @@ def start():
         x.start()
     # 启动CQ Bot
     print_log("Starting CQHttp...")
-    import global_vars
-
     app_thread = threading.Thread(target=lambda: bot.run(
         host=config.POST_ADDRESS, port=config.POST_PORT))
     app_thread.start()
-    global_vars.VARS["bot"] = bot
     global_vars.VARS["app_thread"] = app_thread
     input_loop()
 

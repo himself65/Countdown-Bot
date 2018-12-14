@@ -13,10 +13,7 @@ import shutil
 import base64
 import urllib
 from io import BytesIO
-try:
-    import plugins.config.cats_config as config
-except ImportError as ex:
-    import plugins.config.cats_config_default as config
+config = global_vars.CONFIG[__name__]
 
 
 def plugin():
@@ -31,7 +28,6 @@ def load():
     auth = oss2.Auth(config.ACCESS_KEY_ID, config.ACCESS_KEY_SECRET)
     bucket = oss2.Bucket(auth, config.ENDPOINT, config.BUCKET_NAME)
     global_vars.VARS["bucket"] = bucket
-
 
 @console_command(name="sync-cats", help="同步猫猫图库")
 def sync_cats(args):

@@ -1,6 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: UTF-8 -*-
 from register import command
+import global_vars
+import os
+import re
+import json
+import random
+from datetime import datetime, date
+from json import JSONDecoder, JSONEncoder
+web_app = global_vars.VARS["web_app"]
+DATA_PATH = "plugins/data/sign_in"
 
 
 def plugin():
@@ -11,20 +20,22 @@ def plugin():
     }
 
 
+def load():
+    # web_app = 
+    pass
+
+
 @command(name="签到", help="签到")
 def sign_in(bot, context, args):
     bot.send(context, get_reply(context))
 
 
 def load_data(group_id):
-    from global_vars import config
-    import os
-    import json
-    file_path = os.path.join(config.ATTENDANCE_DATA,
+    file_path = os.path.join(DATA_PATH,
                              "group-%s.json" % (group_id))
     # 文件不存在，建立文件夹
-    if not os.path.exists(config.ATTENDANCE_DATA):
-        os.makedirs(config.ATTENDANCE_DATA)
+    if not os.path.exists(DATA_PATH):
+        os.makedirs(DATA_PATH)
 
     # 读取json文件
     if os.path.exists(file_path):
@@ -44,11 +55,11 @@ def save_data(data, group_id):
     from global_vars import config
     import os
     import json
-    file_path = os.path.join(config.ATTENDANCE_DATA,
+    file_path = os.path.join(DATA_PATH,
                              "group-%s.json" % (group_id))
     # 文件不存在，建立文件夹
-    if not os.path.exists(config.ATTENDANCE_DATA):
-        os.makedirs(config.ATTENDANCE_DATA)
+    if not os.path.exists(DATA_PATH):
+        os.makedirs(DATA_PATH)
     with open(file_path, "w") as f:
         json.dump(data, f)
 
@@ -65,8 +76,6 @@ def get_user_data(data: dict, user_id):
 def get_reply(context):
     group_id = str(context['group_id'])
 
-    from datetime import datetime, date
-    import random
     data = load_data(group_id)
 
     sender = context['sender']
@@ -97,3 +106,28 @@ def get_reply(context):
     save_data(data, group_id)
     return "给%s签到成功了！\n积分增加：%d\n当前积分：%d\n本月签到次数：%d\n累计群签到次数：%d" % (
         nickname, delta, user_data['rating'], user_data['times_month'], user_data['times_all'])
+
+
+@web_app.route("/api/credit/get_by_group/<int:group_id>", methods=["POST", "GET"])
+def get_credit_by_group(group_id: int):
+    if not os.path.exists(os.path.join(DATA_PATH, "group-{}.json".format(group_id))):
+        return JSONEncoder().encode({
+            "message": "Group not found.",
+            "status": -1
+        })
+    data = sign_in.load_data(group_id)
+    result = []
+    for key in data:
+        data[key]["id"] = key
+        result.append(data[key])
+    result.sort(key=lambda x: x["rating"], reverse=True)
+    return JSONEncoder().encode(result)
+
+
+@web_app.route("/api/credit/get_groups", methods=["POST", "GET"])
+def get_groups():
+    result = []
+    pattern = re.compile(r"group-([0-9]+)\.json")
+    for group in os.listdir(DATA_PATH):
+        result.append(pattern.findall(group)[0])
+    return JSONEncoder().encode(result)

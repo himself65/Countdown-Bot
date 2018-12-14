@@ -1,4 +1,6 @@
 from global_vars import registered_commands, message_listeners, loop_threads, console_commands
+from global_vars import config as global_config
+
 import pdb
 
 
@@ -22,7 +24,7 @@ def message_listener(func):
     return inner
 
 
-def schedule_loop(hour, minute, check_interval, execute_delay, name):
+def schedule_loop(hour, minute, check_interval=global_config.CHECK_INTERVAL, execute_delay=global_config.EXECUTE_DELAY, name="Schedule Loop"):
     from util import print_log
     import time
     import threading

@@ -2,11 +2,11 @@ from cqhttp import CQHttp
 from util import print_log
 from register import command, schedule_loop
 from global_vars import registered_commands as commands
-from global_vars import config
+from global_vars import config as global_config
 import global_vars
 import re
 import util
-
+config = global_vars.CONFIG[__name__]
 
 def plugin():
     return {
@@ -14,6 +14,9 @@ def plugin():
         "version": 1.0,
         "description": "Hitokoto广播器"
     }
+
+
+
 
 
 @command(name="hitokoto", help="发送一言")
@@ -49,7 +52,7 @@ def get_hitokoto_groups(url):
     return broadcast_list
 
 
-@schedule_loop(hour=config.HITOKOTO_HOUR, minute=config.HITOKOTO_MINUTE, check_interval=config.CHECK_INTERVAL, execute_delay=config.EXECUTE_DELAY, name="Hitotoko")
+@schedule_loop(hour=config.HITOKOTO_HOUR, minute=config.HITOKOTO_MINUTE, check_interval=global_config.CHECK_INTERVAL, execute_delay=global_config.EXECUTE_DELAY, name="Hitotoko")
 def execute_hitokoto_broadcast():
     bot = global_vars.VARS["bot"]
     message = get_hitokoto()

@@ -1,8 +1,11 @@
-from global_vars import config, repeat_time, last_message
+from global_vars import repeat_time, last_message, VARS
 from cqhttp import CQHttp
 from util import print_log
 from register import message_listener
-
+from util import print_log
+import importlib
+import global_vars
+config = global_vars.CONFIG[__name__]
 
 def plugin():
     return {
@@ -10,6 +13,8 @@ def plugin():
         "version": 1.0,
         "description": "复读机."
     }
+
+    
 
 
 @message_listener

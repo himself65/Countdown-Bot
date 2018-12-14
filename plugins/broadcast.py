@@ -1,7 +1,9 @@
 import global_vars
-from global_vars import config
 from util import print_log
 from register import command, schedule_loop
+from global_vars import config as global_config
+
+config = global_vars.CONFIG[__name__]
 
 
 def plugin():
@@ -12,7 +14,7 @@ def plugin():
     }
 
 
-@command(name="broadcast", help="进行广播")
+@command(name="broadcast", help="在当前群进行广播")
 def broadcast_cmd(bot, context, args=None):
     # print_log("broadcasting..")
     group_id = context.get("group_id", -1)
@@ -42,7 +44,8 @@ def broadcast_at_group(group_id: int, content=None):
             print_log(ex)
             raise ex
 
-@schedule_loop(hour=config.BROADCAST_HOUR, minute=config.BROADCAST_MINUTE, check_interval=config.CHECK_INTERVAL, execute_delay=config.EXECUTE_DELAY, name="Broadcast")
+
+@schedule_loop(hour=config.BROADCAST_HOUR, minute=config.BROADCAST_MINUTE,  name="Broadcast")
 def execute_broadcast():
     text = get_countdown_list(config.LIST_URL)
     for group in text:

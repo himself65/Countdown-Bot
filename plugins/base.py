@@ -1,8 +1,9 @@
 from cqhttp import CQHttp
 from util import print_log
-from register import command, schedule_loop,console_command
+from register import command, schedule_loop, console_command
 from global_vars import registered_commands as commands
-from global_vars import config
+from global_vars import config as global_config
+from global_vars import CONFIG
 import re
 import util
 import global_vars
@@ -29,10 +30,10 @@ def show_status(bot: CQHttp, context, args):
 Hitokoto广播时间: {hitokoto_hour:0>2d}:{hitokoto_minute:0>2d}
 指令前缀: {command_prefix}
 输入 [指令前缀]help 查看帮助""".format(
-            broadcast_hour=config.BROADCAST_HOUR, broadcast_minute=config.BROADCAST_MINUTE,
-            hitokoto_hour=config.HITOKOTO_HOUR, hitokoto_minute=config.HITOKOTO_MINUTE,
+            broadcast_hour=CONFIG["plugins.broadcast"].BROADCAST_HOUR, broadcast_minute=CONFIG["plugins.broadcast"].BROADCAST_MINUTE,
+            hitokoto_hour=CONFIG["plugins.hitokoto"].HITOKOTO_HOUR, hitokoto_minute=CONFIG["plugins.hitokoto"].HITOKOTO_MINUTE,
             command_prefix="".join(
-                map(lambda x: x+" ", config.COMMAND_PREFIX)),
+                map(lambda x: x+" ", global_config.COMMAND_PREFIX)),
         )
     bot.send(context, to_send)
 
@@ -56,11 +57,12 @@ def plugins(bot: CQHttp, context, args):
 @console_command(name="reload", help="重新加载配置文件")
 def reload_config(bot, context, args=None):
     import importlib
-    importlib.reload(config)
-    for item in dir(config):
+    global global_config
+    global_config = importlib.reload(global_config)
+    for item in dir(global_config):
         if item.startswith("__"):
             continue
-        print("%s = %s" % (item, getattr(config, item)))
+        print("%s = %s" % (item, getattr(global_config, item)))
 
 
 @command(name="about", help="关于")

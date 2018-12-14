@@ -1,20 +1,18 @@
+from global_vars import registered_commands as commands
+from register import command
+from util import print_log
+from threading import Thread
+from cqhttp import CQHttp
 import ctypes
 import inspect
 import os
 import re
 import tempfile
 import time
-from threading import Thread
-
-from cqhttp import CQHttp
-
 import docker
 import util
-from global_vars import config
-from global_vars import registered_commands as commands
-from main import config
-from register import command
-from util import print_log
+import global_vars
+config = global_vars.CONFIG[__name__]
 
 def plugin():
     return {
@@ -22,6 +20,9 @@ def plugin():
         "version": 1.0,
         "description": "可以在Docker内运行Python代码."
     }
+
+
+
 
 @command(name="exec", help="在Docker中执行Python3.6代码")
 def exec_python_code(bot: CQHttp, context=None, args=None):

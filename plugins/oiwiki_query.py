@@ -2,9 +2,10 @@ from cqhttp import CQHttp
 from util import print_log
 from register import command
 from global_vars import registered_commands as commands
-from global_vars import config
 import re
 import util
+import global_vars
+config = global_vars.CONFIG[__name__]
 
 
 def plugin():
