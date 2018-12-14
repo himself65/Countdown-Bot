@@ -29,6 +29,7 @@ def load():
     bucket = oss2.Bucket(auth, config.ENDPOINT, config.BUCKET_NAME)
     global_vars.VARS["bucket"] = bucket
 
+
 @console_command(name="sync-cats", help="同步猫猫图库")
 def sync_cats(args):
     data = {}
@@ -58,7 +59,10 @@ def suck_cats(bot: CQHttp, context, args):
     if len(args) > 1:
         selected_user = args[1]
     else:
-        selected_user = random.choice(list(data.keys()))
+        choices = []
+        for k, v in data.items():
+            choices += [k]*len(v["image_list"])
+        selected_user = random.choice(choices)  
     print_log("user:{}".format(selected_user))
     if selected_user not in data:
         bot.send(context, "指定用户未上传过猫片")
