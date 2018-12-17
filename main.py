@@ -111,6 +111,14 @@ def handle_message(context):
             command = (text[len(prefix):]+" ").split(" ")
             print_log("Execute command: {}".format(command))
             if command[0] in registered_commands:
+                from global_vars import last_command as last
+                if context["group_id"] not in last:
+                    last[context["group_id"]] = 0
+                if (time.time()-last[context["group_id"]])*1000 < config.COMMAND_COOLDOWN:
+                    bot.send(context, "指令冷却中.")
+                    return
+                else:
+                    last[context["group_id"]] = time.time()
                 registered_commands[command[0]][1].__call__(
                     bot, context, command)
             else:
