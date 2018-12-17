@@ -116,7 +116,7 @@ def get_credit_by_group(group_id: int):
             "message": "Group not found.",
             "status": -1
         })
-    data = sign_in.load_data(group_id)
+    data = load_data(group_id)
     result = []
     for key in data:
         data[key]["id"] = key
