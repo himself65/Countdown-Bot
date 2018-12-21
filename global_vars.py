@@ -16,7 +16,7 @@ message_listeners = [
 loop_threads = []
 last_message = None
 repeat_time = 0
-last_command={}
+last_command = {}
 VARS = {
     "bot": None,
     "app_thread": None,
@@ -25,4 +25,3 @@ VARS = {
 CONFIG = {
 
 }
-

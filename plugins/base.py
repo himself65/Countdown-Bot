@@ -55,7 +55,7 @@ def plugins(bot: CQHttp, context, args):
 
 
 @console_command(name="reload", help="重新加载配置文件")
-def reload_config(bot, context, args=None):
+def reload_config(args):
     import importlib
     global global_config
     global_config = importlib.reload(global_config)
