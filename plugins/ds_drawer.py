@@ -111,7 +111,7 @@ def generate_graph(string):
     return buff.getbuffer()
 
 
-# @command(name="sam", help="绘制SAM")
+@command(name="sam", help="绘制SAM")
 def sam(bot: CQHttp, context, args):
     import base64
     if len(args) < 2:
