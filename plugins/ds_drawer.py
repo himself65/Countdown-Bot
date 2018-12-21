@@ -103,7 +103,7 @@ def generate_graph(string):
             dot.edge(str(x.vtx_id), str(x.link.vtx_id), color="red")
     tmpdir = tempfile.gettempdir()
     target = os.path.join(tmpdir, "qwq")
-    dot.render(filename=target, format="png", view=True)
+    dot.render(filename=target, format="png")
     buff = BytesIO()
     with open(target+".png", "rb") as file:
         buff.write(file.read())
