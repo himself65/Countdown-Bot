@@ -42,7 +42,7 @@ def broadcast_at_group(group_id: int, content=None):
             bot.send_group_msg(group_id=group_id, message=item)
         except Exception as ex:
             print_log(ex)
-            raise ex
+            # raise ex
 
 
 @schedule_loop(hour=config.BROADCAST_HOUR, minute=config.BROADCAST_MINUTE,  name="Broadcast")
