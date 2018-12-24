@@ -1,31 +1,22 @@
 from graphviz import Digraph
 from io import BytesIO
-from cqhttp import CQHttp
-from register import command
-import global_vars
+
 import copy
 import pdb
 import tempfile
 import os
-config = global_vars.CONFIG[__name__]
-
-
-def plugin():
-    return {
-        "author": "officeyutong",
-        "version": 1.0,
-        "description": "数据结构绘图器"
-    }
+import collections
 
 
 class SAMNode:
     link = None
     chds = None
     max_len = 0
-    right_size = 0
+    right_size = None
     vtx_id = 0
     node_list = []
     accept = False
+    to = None
 
     def __str__(self):
         ret = "SAMNode{{ID:{},max_len={},rightsize={},".format(
@@ -38,27 +29,29 @@ class SAMNode:
     def __repr__(self):
         return self.__str__()
 
-    def __init__(self, node_list, max_len=0):
+    def __init__(self, node_list, strid, max_len=0):
         self.max_len = max_len
         self.node_list = node_list
         self.node_list.append(self)
         self.vtx_id = len(node_list)
         self.chds = dict()
-        self.right_size = 1
+        self.right_size = collections.OrderedDict()
+        self.right_size[strid] = 1
+        self.to = list()
 
     def clone(self):
         cloned = SAMNode(self.node_list, self.max_len)
         cloned.link = self.link
         cloned.chds = copy.copy(self.chds)
-        cloned.right_size = 0
+        cloned.right_size = collections.OrderedDict()
         cloned.accept = False
         return cloned
 
 
-def append(char: str, last: SAMNode, root: SAMNode, suf_id: int)->SAMNode:
-    new = SAMNode(root.node_list, last.max_len+1)
+def append(char: str, last: SAMNode, root: SAMNode, str_id: int)->SAMNode:
+    new = SAMNode(root.node_list, str_id, last.max_len+1)
     curr = last
-    new.accept = suf_id
+    new.accept = True
     while curr and (char not in curr.chds):
         curr.chds[char] = new
         curr = curr.link
@@ -77,55 +70,43 @@ def append(char: str, last: SAMNode, root: SAMNode, suf_id: int)->SAMNode:
     return new
 
 
-def generate_graph(string):
+def generate_graph(string, format):
     nodes = []
-    root = SAMNode(nodes)
-    root.right_size = 0
-    last = root
-    for idx, x in enumerate(string):
-        last = append(x, last, root, idx+1)
+    root = SAMNode(nodes, 0)
+    root.right_size = collections.OrderedDict()
+    strs = []
+    if "|" in string:
+        strs = string.split("|")
+    else:
+        strs.append(string)
+    print(strs)
+    for idx, curr in enumerate(strs):
+        last = root
+        for x in curr:
+            last = append(x, last, root, idx+1)
+    dot = Digraph("SAM")
     nodes.sort(key=lambda x: x.max_len, reverse=True)
-    dot = Digraph(string)
     for x in nodes:
         if x.link is not None:
-            x.link.right_size += x.right_size
+            for i in range(1, 1+len(strs)):
+                if i not in x.link.right_size:
+                    x.link.right_size[i] = 0
+                if i not in x.right_size:
+                    x.right_size[i] = 0
+                x.link.right_size[i] += x.right_size[i]
     nodes.sort(key=lambda x: x.vtx_id)
-    for x in nodes:
-        label = "{}\nMax={}\nSize={}".format(
-            x.vtx_id, x.max_len, x.right_size)
-        if x.accept:
-            label += "\nAcceptable"
-        dot.node(str(x.vtx_id), label)
-    for x in nodes:
-        for k, v in x.chds.items():
-            dot.edge(str(x.vtx_id), str(v.vtx_id), k)
-        if x.link is not None:
-            dot.edge(str(x.vtx_id), str(x.link.vtx_id), color="red")
-    tmpdir = tempfile.gettempdir()
+    for node in nodes:
+        label = "{}\nMax={}".format(node.vtx_id, node.max_len)
+        if len(node.right_size):
+            sorted(node.right_size)
+            for k, v in node.right_size.items():
+                label += "\nsize{}={}".format(k, v)
+        dot.node(str(node.vtx_id), label)
+        if node.link:
+            dot.edge(str(node.vtx_id), str(node.link.vtx_id), color="red")
+        for k, v in node.chds.items():
+            dot.edge(str(node.vtx_id), str(v.vtx_id), k)
+    tmpdir = tempfile.mkdtemp()
     target = os.path.join(tmpdir, "qwq")
-    dot.render(filename=target, format="png")
-    buff = BytesIO()
-    with open(target+".png", "rb") as file:
-        buff.write(file.read())
-    # print(buff.getvalue())
-    return buff.getbuffer()
-
-
-@command(name="sam", help="绘制SAM")
-def sam(bot: CQHttp, context, args):
-    import base64
-    if len(args) < 2:
-        bot.send(context, "请输入字符串")
-        return
-    string = args[1]
-    if len(string) > config.MAX_STRING_LENGTH:
-        bot.send(context, "长度上限为 {} .".format(config.MAX_STRING_LENGTH))
-        return
-    result = base64.encodebytes(generate_graph(
-        string)).decode().replace("\n", "")
-    bot.send(context, "[CQ:image,file=base64://{}]".format(result))
-
-
-if __name__ == "__main__":
-    line = input()
-    # sam(None, None, ["", line])
+    dot.render(filename=target, format=format)
+    return target+"."+format
