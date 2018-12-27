@@ -14,6 +14,7 @@ import util
 import global_vars
 config = global_vars.CONFIG[__name__]
 
+
 def plugin():
     return {
         "author": "officeyutong",
@@ -22,12 +23,10 @@ def plugin():
     }
 
 
-
-
 @command(name="exec", help="在Docker中执行Python3.6代码")
 def exec_python_code(bot: CQHttp, context=None, args=None):
     def callback(msg):
-        bot.send(context, msg)
+        bot.send(context, "标准输出:\n%s" % msg)
     code = "".join(map(lambda x: x+" ", args[1:]))
     pattern = re.compile(r'&#(.*?);')
     for item in pattern.findall(code):
